@@ -1,0 +1,57 @@
+<simulationpackage xsi:schemalocation="http://gsic.tel.uva.es/dnse3/spd_v0p8 spd_v0p9.xsd" xmlns="http://gsic.tel.uva.es/dnse3/spd_v0p9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<description>
+		<title>P2-ns-QueueingTheory-m_m_1-m_g_1</title>
+		<textualdescription>Estudio de los sistemas de colas M/M/1 y M/G/1</textualdescription>
+	</description>
+	<parametertypes>
+		<seedtype id="rep" />
+		<rationaltype id="lambda">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>11</defaultvalue>
+		</rationaltype>
+		<rationaltype id="meanPacketSize">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>1000</defaultvalue>
+		</rationaltype>
+		<rationaltype id="bitRate">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>100000</defaultvalue>
+		</rationaltype>
+		<rationaltype id="tmax">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>2000</defaultvalue>
+		</rationaltype>
+		<integertype id="fixedlength">
+			<greaterthanorequalto>0</greaterthanorequalto>
+			<lessthanorequalto>1</lessthanorequalto>
+			<defaultvalue>0</defaultvalue>
+		</integertype>
+		<integertype id="averaging">
+			<greaterthanorequalto>0</greaterthanorequalto>
+			<lessthanorequalto>1</lessthanorequalto>
+			<defaultvalue>0</defaultvalue>
+		</integertype>
+	</parametertypes>
+	<outputfilestructures>
+		<filestructure id="Llegada de paquetes" ismultilinefile="true">
+			<outputvar>T</outputvar>
+			<outputvar>packet_size</outputvar>
+		</filestructure>
+		<filestructure id="Salida de cola" ismultilinefile="true">
+			<outputvar>T</outputvar>
+		</filestructure>
+		<filestructure id="Clientes en cola" ismultilinefile="true">
+			<outputvar>T</outputvar>
+			<outputvar>Q</outputvar>
+		</filestructure>
+		<filestructure id="Resultado final" ismultilinefile="false">
+			<outputvar>Q</outputvar>
+		</filestructure>
+	</outputfilestructures>
+	<outputfiles>
+		<tabbedfile filestructureref="Llegada de paquetes">P3-ns-QueueingTheory-arrivals.trace</tabbedfile>
+		<tabbedfile filestructureref="Salida de cola">P3-ns-QueueingTheory-outputs.trace</tabbedfile>
+		<tabbedfile filestructureref="Clientes en cola">P3-ns-QueueingTheory-clientsinqueue.trace</tabbedfile>
+		<resultfile filestructureref="Resultado final">output</resultfile>
+	</outputfiles>
+</simulationpackage>

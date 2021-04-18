@@ -1,0 +1,43 @@
+#!/bin/bash
+#Juan I. Asensio
+#2016-04-07
+#ETSI Telecomunicacion - Universidad de Valladolid
+#
+#Script for parapeter sweep simulation
+
+#Name of the file where to dump the generated trace
+TRACEFILE=sweep-length.trace
+#Name of the xgraph to generate
+TITLE="Barrido de tiempo de simulacion"
+
+#If it exists, the trace file is deleted
+if [ -e $TRACEFILE ]
+then
+  /bin/rm $TRACEFILE
+fi
+
+#Values of the parameter to "sweep"
+SWEEPS=""
+
+#xgraph axis names
+XUNITS="segundos"
+YUNITS="Packets"
+
+#We set a seed for the ns3 random number generator
+SEED=$RANDOM
+for sweep in $SWEEPS
+do
+  output=`Debug/queue-mm1-mg1 --tmax=$sweep --rep=$SEED`
+  echo "Ejecutando simulacion para parametro $XUNITS con valor: $sweep"
+  echo $sweep $output >> $TRACEFILE
+done
+
+echo "title=$TITLE" >> $TRACEFILE
+echo "title_x=$XUNITS" >> $TRACEFILE
+echo "title_y=$YUNITS" >> $TRACEFILE
+
+#Ejecucion de xgraph
+echo "LANZANDO XGRAPH"
+/home/softlabs/ttr/bin/xgraph $TRACEFILE &
+
+
