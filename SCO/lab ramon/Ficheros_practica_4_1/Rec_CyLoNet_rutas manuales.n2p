@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<network description="" name="" version="4">
+	<node id="2" xCoord="-4.716666666666667" yCoord="41.65" name="Valladolid" isUp="true"/>
+	<node id="3" xCoord="-4.533333333333333" yCoord="42.016666666666666" name="Palencia" isUp="true"/>
+	<node id="4" xCoord="-3.6960924999999634" yCoord="42.3442896" name="Burgos" isUp="true"/>
+	<node id="5" xCoord="-2.6511915" yCoord="41.8151715" name="Soria" isUp="true"/>
+	<node id="6" xCoord="-4.116666666666666" yCoord="40.95" name="Segovia" isUp="true"/>
+	<node id="7" xCoord="-4.7" yCoord="40.65" name="Ávila" isUp="true"/>
+	<layer id="1" name="Physical Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<link id="8" originNodeId="2" destinationNodeId="3" capacity="3.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="9" originNodeId="3" destinationNodeId="2" capacity="3.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="10" originNodeId="3" destinationNodeId="4" capacity="3.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-320"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="11" originNodeId="4" destinationNodeId="3" capacity="3.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-320"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="12" originNodeId="4" destinationNodeId="5" capacity="3.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-570"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="13" originNodeId="5" destinationNodeId="4" capacity="3.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-570"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="14" originNodeId="5" destinationNodeId="6" capacity="3.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-500 -500"/>
+			<attribute key="dcmPositions_km" value="0 130"/>
+			<attribute key="edfaGains_dB" value="19 17"/>
+			<attribute key="edfaPositions_km" value="60 130"/>
+		</link>
+		<link id="15" originNodeId="6" destinationNodeId="5" capacity="3.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-500 -500"/>
+			<attribute key="dcmPositions_km" value="0 130"/>
+			<attribute key="edfaGains_dB" value="19 17"/>
+			<attribute key="edfaPositions_km" value="60 130"/>
+		</link>
+		<link id="16" originNodeId="6" destinationNodeId="7" capacity="3.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="17" originNodeId="7" destinationNodeId="6" capacity="3.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="18" originNodeId="7" destinationNodeId="2" capacity="3.0" lengthInKm="110.77" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-550"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="19" originNodeId="2" destinationNodeId="7" capacity="3.0" lengthInKm="110.77" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-550"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<demand id="20" ingressNodeId="2" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="374"/>
+		</demand>
+		<demand id="21" ingressNodeId="2" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="375"/>
+		</demand>
+		<demand id="22" ingressNodeId="3" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="376"/>
+		</demand>
+		<demand id="23" ingressNodeId="4" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="377"/>
+		</demand>
+		<demand id="24" ingressNodeId="4" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="378"/>
+		</demand>
+		<demand id="25" ingressNodeId="5" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="379"/>
+		</demand>
+		<demand id="26" ingressNodeId="6" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="380"/>
+		</demand>
+		<demand id="27" ingressNodeId="7" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="381"/>
+		</demand>
+		<sourceRouting>
+			<route id="28" demandId="20" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="8 10 12" currentSeqLinksAndProtectionSegments="8 10 12" backupSegmentList="">
+				<attribute key="seqWavelengths" value="0 0 0 0"/>
+			</route>
+			<route id="29" demandId="21" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="8 10" currentSeqLinksAndProtectionSegments="8 10" backupSegmentList="">
+				<attribute key="seqWavelengths" value="1 1 1"/>
+			</route>
+			<route id="30" demandId="22" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="10 12" currentSeqLinksAndProtectionSegments="10 12" backupSegmentList="">
+				<attribute key="seqWavelengths" value="2 2 2"/>
+			</route>
+			<route id="31" demandId="23" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="12" currentSeqLinksAndProtectionSegments="12" backupSegmentList="">
+				<attribute key="seqWavelengths" value="1 1"/>
+			</route>
+			<route id="32" demandId="24" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="11 9 19 17" currentSeqLinksAndProtectionSegments="11 9 19 17" backupSegmentList="">
+				<attribute key="seqWavelengths" value="0 0 0 0"/>
+			</route>
+			<route id="33" demandId="25" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="14 16" currentSeqLinksAndProtectionSegments="14 16" backupSegmentList="">
+				<attribute key="seqWavelengths" value="0 0 0"/>
+			</route>
+			<route id="34" demandId="26" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="16 18" currentSeqLinksAndProtectionSegments="16 18" backupSegmentList="">
+				<attribute key="seqWavelengths" value="1 1 1"/>
+			</route>
+			<route id="35" demandId="27" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="18 8" currentSeqLinksAndProtectionSegments="18 8" backupSegmentList="">
+				<attribute key="seqWavelengths" value="2 2 2"/>
+			</route>
+		</sourceRouting>
+	</layer>
+	<layer id="36" name="Link Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<sourceRouting/>
+	</layer>
+	<layer id="37" name="Transport Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<link id="38" originNodeId="2" destinationNodeId="5" capacity="16.0" lengthInKm="240.92000000000002" propagationSpeedInKmPerSecond="200000.0" isUp="true"/>
+		<link id="39" originNodeId="2" destinationNodeId="4" capacity="16.0" lengthInKm="120.92" propagationSpeedInKmPerSecond="199999.99999999997" isUp="true"/>
+		<link id="40" originNodeId="3" destinationNodeId="5" capacity="16.0" lengthInKm="198.0" propagationSpeedInKmPerSecond="200000.0" isUp="true"/>
+		<link id="41" originNodeId="4" destinationNodeId="5" capacity="16.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="200000.00000000003" isUp="true"/>
+		<link id="42" originNodeId="4" destinationNodeId="6" capacity="16.0" lengthInKm="289.69" propagationSpeedInKmPerSecond="200000.0" isUp="true"/>
+		<link id="43" originNodeId="5" destinationNodeId="7" capacity="16.0" lengthInKm="223.0" propagationSpeedInKmPerSecond="199999.99999999997" isUp="true"/>
+		<link id="44" originNodeId="6" destinationNodeId="2" capacity="16.0" lengthInKm="168.76999999999998" propagationSpeedInKmPerSecond="200000.0" isUp="true"/>
+		<link id="45" originNodeId="7" destinationNodeId="3" capacity="16.0" lengthInKm="153.69" propagationSpeedInKmPerSecond="200000.0" isUp="true"/>
+		<sourceRouting/>
+	</layer>
+</network>
