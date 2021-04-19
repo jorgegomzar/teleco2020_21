@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<network description="" name="" version="4">
+	<node id="2" xCoord="-4.716666666666667" yCoord="41.65" name="Valladolid" isUp="true"/>
+	<node id="3" xCoord="-4.533333333333333" yCoord="42.016666666666666" name="Palencia" isUp="true"/>
+	<node id="4" xCoord="-3.6960924999999634" yCoord="42.3442896" name="Burgos" isUp="true"/>
+	<node id="5" xCoord="-2.6511915" yCoord="41.8151715" name="Soria" isUp="true"/>
+	<node id="6" xCoord="-4.116666666666666" yCoord="40.95" name="Segovia" isUp="true"/>
+	<node id="7" xCoord="-4.7" yCoord="40.65" name="Ávila" isUp="true"/>
+	<layer id="1" name="Layer 1" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<sourceRouting/>
+	</layer>
+	<layer id="8" name="Layer 1" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<sourceRouting/>
+	</layer>
+	<layer id="9" name="Layer 2" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<sourceRouting/>
+	</layer>
+</network>
