@@ -87,7 +87,7 @@ printf("M/G/1 100 simulaciones\n");
 printf(" - Limite inferior: %f\n", lim_inf);
 printf(" - Limite superior: %f\n", lim_sup);
 
-if (mm1_teo_mean <= lim_sup && mm1_teo_mean >= lim_inf)
+if (mg1_teo_mean <= lim_sup && mg1_teo_mean >= lim_inf)
         printf(" [+] Q promedio teorica entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
 else
         printf(" [-] Q promedio teorica NO entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
@@ -97,7 +97,7 @@ endif
 
 % IdC PARA 50 SIMULACIONES
 m50 = load('50_mm1.csv');
-m50 = load('50_mg1.csv');
+g50 = load('50_mg1.csv');
 n = length(m50);
 
 m50_mean = mean(m50);
@@ -132,7 +132,7 @@ printf("M/G/1 50 simulaciones\n");
 printf(" - Limite inferior: %f\n", lim_inf);
 printf(" - Limite superior: %f\n", lim_sup);
 
-if (mm1_teo_mean <= lim_sup && mm1_teo_mean >= lim_inf)
+if (mg1_teo_mean <= lim_sup && mg1_teo_mean >= lim_inf)
         printf(" [+] Q promedio teorica entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
 else
         printf(" [-] Q promedio teorica NO entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
