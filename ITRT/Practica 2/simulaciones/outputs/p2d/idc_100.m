@@ -6,7 +6,7 @@ mg1_teo_mean = load('mg1_teo_mean.csv');
 
 % IdC PARA 200 SIMULACIONES M/M/1
 printf("M/M/1 100 simulaciones\n");
-m200 = load('100_mm1.csv');
+m100 = load('100_mm1.csv');
 n = length(m100);
 
 % idc del 95% -> 100(1-alpha)

@@ -24,9 +24,9 @@ printf(" - Limite inferior: %f\n", lim_inf);
 printf(" - Limite superior: %f\n", lim_sup);
 
 if (mm1_teo_mean <= lim_sup && mm1_teo_mean >= lim_inf)
-	printf(" [+] Q promedio teorica entra dentro del IdC calculado\n");
+	printf(" [+] Q promedio teorica entra dentro del IdC calculado (%f)\n", mm1_teo_mean);
 else
-	printf(" [-] Q promedio teorica NO entra dentro del IdC calculado\n");
+	printf(" [-] Q promedio teorica NO entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
 endif
 
 % --------------------------------------------------------
@@ -51,8 +51,8 @@ printf(" - Limite inferior: %f\n", lim_inf);
 printf(" - Limite superior: %f\n", lim_sup);
 
 if (mg1_teo_mean <= lim_sup && mg1_teo_mean >= lim_inf)
-        printf(" [+] Q promedio teorica entra dentro del IdC calculado\n");
+        printf(" [+] Q promedio teorica entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
 else
-        printf(" [-] Q promedio teorica NO entra dentro del IdC calculado\n");
+        printf(" [-] Q promedio teorica NO entra dentro del IdC calculado (%f)\n", mg1_teo_mean);
 endif
 
