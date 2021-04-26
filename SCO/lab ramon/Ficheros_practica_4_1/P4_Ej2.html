@@ -1,0 +1,6870 @@
+<html>
+  <head>
+    
+  </head>
+  <body><table border="0" cellpadding="1" cellspacing="1" style="height: 120px; width: 100%; font-size: 20px; color: white; font-weight: bold; background-color: #1E73BE;">
+	<tr>
+		<td>
+			<table border="0" cellpadding="1" cellspacing="1" style="width: 100%;">
+				<tr>
+					<td rowspan="2" style="width: 130px;"><img src="tmp_7340669341741462354.png" alt="Net2Plan logo" /></td>
+					<td style="padding: 10px; font-size: 40px; color: white; font-weight: bold;">Net2Plan</td>
+				</tr>
+				<tr><td style="padding: 10px; font-size: 20px; color: white; font-weight: bold;">The open-source network planner</td></tr>
+			</table>
+		</td>
+		<td style="padding: 10px; font-size: 40px; text-align: right; color: white; font-weight: bold;">Net2Plan Report</td>
+	</tr>
+</table>
+
+    <title>WDM line engineering in multilayer (lightpath based) networks</title>
+    
+
+    <h1>
+      WDM line engineering report for lighptath-based networks
+    </h1>
+    <p>
+      This report shows line engineering information for WDM links in a 
+      multilayer optical network. The impairment calculations are inspired in 
+      the procedures described in the 2009 ITU-T WDM manual &quot;Optical fibres, 
+      cabbles and systems&quot;.
+    </p>
+    <p>
+      The report assumes that the WDM network follows the scheme:
+    </p>
+    <ul>
+      <li>
+        In the net2plan object, nodes are OADMs, links are fiber links, and 
+        routes are lightpaths: WDM channels optically switched at intermediate 
+        nodes.
+      </li>
+      <li>
+        Nodes are connected by unidirectional fiber links. Fiber link distance 
+        is given by the link length.Other specifications are given by 
+        fiber_XXX input parameters. The fiber can be split into spans if 
+        optical amplifers (EDFAs)and/or dispersion compensating modules (DCMs) 
+        are placed along the fiber.
+      </li>
+      <li>
+        Optical line amplifiers (EDFAs) can be located in none, one or more 
+        positions in thefiber link, separating them in different spans. EDFAs 
+        are supposed to operate in the automatic gain control mode. Thus, the 
+        gain is the same, whatever the number of inputWDM channels. EDFA 
+        positions (as distance in km from the link start to the EDFA 
+        location)and EDFA gains (assumed in dB) are read from the 
+        &quot;edfaPositions_km&quot; and &quot;edfaGains_dB&quot; attributes of the links. The 
+        format of both attributes are the same: a string of numbers separated 
+        by spaces. The <i>i</i>-th number corresponding to the position/gain 
+        of the <i>i</i>-th EDFA. If the attributes do not exist, it is assumed 
+        that no EDFAs are placed in this link. EDFA specifications are given 
+        by &quot;edfa_XXX&quot; parameters
+      </li>
+      <li>
+        Dispersion compensating modules (DCMs) can be located in none, one or 
+        more positionsin the fiber link, separating them in different spans. 
+        If a DCM and a EDFA have the same location, it is assumed that the DCM 
+        is placed first, to reduce the non-linear effects. DCM positions (as 
+        distance in km from the link start to the DCM location) are read from 
+        the &quot;dcmPositions_km&quot; attribute of the link, and the same format as 
+        with &quot;edfaPositions_km&quot; attribute is expected. If the attribute does 
+        not exist, it is assumed that no DCMs are placed in this link. DCM 
+        specifications are given by &quot;dcm_XXX&quot; parameters
+      </li>
+      <li>
+        Fiber links start and end in OADM modules, that permit adding, 
+        dropping and optically switchindividual WDM channels. OADMs have a 
+        pre-amplifier (traversed by drop and express channels) and a boost 
+        amplifier (traversed by add and express channels). They are supposed 
+        to equalize the channel power at their outputs, to a fixed value 
+        (added and express channels will thus have the same power in the 
+        fibers).Also, OADMs attenuate appropriately the optical signal coming 
+        from the pre-amplifier, in the drop channels,so that they fall within 
+        the receiver sensitivity range. OADM noise figures for add, drop and 
+        express channelsare given as input parameters. PMD values for add, 
+        drop and express channels are computed assumming that: (i) add channel 
+        traverse a multiplexer and the booster, (ii) drop channels travese the 
+        pre-amplifier and a demultiplexer,(iii) express channels traverse the 
+        two amplifiers. The required parameters are provided in oadm_XXX 
+        parameters.
+      </li>
+      <li>
+        Each channel ends in a receiver, with specifications given by &quot;tp_XXX&quot; 
+        parameters.
+      </li>
+    </ul>
+    <p>
+      The basic checks performed are:
+    </p>
+    <ul>
+      <li>
+        For each link, signal power levels are within operating ranges at the 
+        oadm/edfas/dcms, both when the link has one single active channel, or 
+        when all the&quot;channels_maxNumChannels&quot; are active
+      </li>
+      <li>
+        For each link, chromatic dispersion is within the limits set per link
+      </li>
+      <li>
+        For each route (lightpath), chromatic dispersion is within the limits 
+        of the receiver.
+      </li>
+      <li>
+        For each route (lightpath), OSNR (Optical Signal to Noise Ration) is 
+        within the operating range at the receiver.A set of margins are 
+        considered to account to several not directly considered impairments.
+      </li>
+      <li>
+        For each route (lightpath), PMD (Polarization mode dispersion) is 
+        within the operating range at the receiver
+      </li>
+    </ul>
+    <h2>
+      Input Parameters
+    </h2>
+    <table border="1">
+      <tr>
+        <th>
+          <b>Name</b>
+        </th>
+        <th>
+          <b>Value</b>
+        </th>
+        <th>
+          <b>Description</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          channels_minChannelLambda_nm
+        </td>
+        <td>
+          1530.33
+        </td>
+        <td>
+          Channel minimum wavelength in nm
+        </td>
+      </tr>
+      <tr>
+        <td>
+          channels_channelSpacing_GHz
+        </td>
+        <td>
+          100
+        </td>
+        <td>
+          Channel spacing in GHz
+        </td>
+      </tr>
+      <tr>
+        <td>
+          channels_maxNumChannels
+        </td>
+        <td>
+          16
+        </td>
+        <td>
+          Maximum number of WDM channels that will be used
+        </td>
+      </tr>
+      <tr>
+        <td>
+          fiber_attenuation_dB_per_km
+        </td>
+        <td>
+          0.25
+        </td>
+        <td>
+          Fiber attenuation in dB/km
+        </td>
+      </tr>
+      <tr>
+        <td>
+          fiber_worseChromaticDispersion_ps_per_nm_per_km
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          Chromatic dispersion of the fiber in ps/nm/km
+        </td>
+      </tr>
+      <tr>
+        <td>
+          fiber_PMD_ps_per_sqroot_km
+        </td>
+        <td>
+          0.4
+        </td>
+        <td>
+          Polarization mode dispersion per km^0.5 of fiber (PMD_Q link factor)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_maxChromaticDispersionTolerance_ps_per_nm
+        </td>
+        <td>
+          800
+        </td>
+        <td>
+          Maximum chromatic dispersion tolerance in ps/nm at the receiver
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_minOSNR_dB
+        </td>
+        <td>
+          7
+        </td>
+        <td>
+          Minimum OSNR needed at the receiver
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_inputPowerSensitivityMin_dBm
+        </td>
+        <td>
+          -20
+        </td>
+        <td>
+          Minimum input power at the receiver in dBm
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_inputPowerSensitivityMax_dBm
+        </td>
+        <td>
+          -8
+        </td>
+        <td>
+          Maximum input power at the receiver in dBm
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_minWavelength_nm
+        </td>
+        <td>
+          1529.55
+        </td>
+        <td>
+          Minimum wavelength usable by the transponder
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_maxWavelength_nm
+        </td>
+        <td>
+          1561.84
+        </td>
+        <td>
+          Maximum wavelength usable by the transponder
+        </td>
+      </tr>
+      <tr>
+        <td>
+          tp_pmdTolerance_ps
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          Maximum tolarance of polarizarion mode dispersion (mean of 
+          differential group delay) in ps at the receiver
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_minWavelength_nm
+        </td>
+        <td>
+          1530
+        </td>
+        <td>
+          Minimum wavelength usable by the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_maxWavelength_nm
+        </td>
+        <td>
+          1563
+        </td>
+        <td>
+          Maximum wavelength usable by the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_minInputPower_dBm
+        </td>
+        <td>
+          -29
+        </td>
+        <td>
+          Minimum input power at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_maxInputPower_dBm
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          Maximum input power at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_minOutputPower_dBm
+        </td>
+        <td>
+          -6
+        </td>
+        <td>
+          Minimum output power at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_maxOutputPower_dBm
+        </td>
+        <td>
+          19
+        </td>
+        <td>
+          Maximum output power at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_minGain_dB
+        </td>
+        <td>
+          17
+        </td>
+        <td>
+          Minimum gain at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_maxGain_dB
+        </td>
+        <td>
+          23
+        </td>
+        <td>
+          Maximum gain at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_PMD_ps
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          Polarization mode dispersion in ps added by the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_noiseFactorMaximumGain_dB
+        </td>
+        <td>
+          5
+        </td>
+        <td>
+          Noise factor at the EDFA when the gain is in its upper limit (linear 
+          interpolation is used to estimate the noise figura at other gains)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_noiseFactorMinimumGain_dB
+        </td>
+        <td>
+          5
+        </td>
+        <td>
+          Noise factor at the EDFA when the gain is in its lower limit (linear 
+          interpolation is used to estimate the noise figura at other gains)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          edfa_noiseFactorReferenceBandwidth_nm
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          Reference bandwidth that measures the noise factor at the EDFA
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_perChannelOutputPower_dBm
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          Output power per channel at the OADM in dBm
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_perChannelMinInputPower_dBm
+        </td>
+        <td>
+          -19
+        </td>
+        <td>
+          Minimum power needed at the OADM input
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_perChannelMaxInputPower_dBm
+        </td>
+        <td>
+          1000
+        </td>
+        <td>
+          Maximum power admitted at the OADM input
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_maxAbsoluteChromaticDispersionAtInput_ps_per_nm
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          Maximum chromatic dispersion tolerance in ps/nm at te end of each 
+          link (absolute value)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_muxDemuxPMD_ps
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          PMD of the mux/demux inside the OADMs. Does not affect express 
+          lightpaths
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_preAmplifierPMD_ps
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          PMD off OADM preamplifier
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_boosterPMD_ps
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          PMD off OADM booster amplifier
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_addChannelNoiseFactor_dB
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          Noise factor observed by add channels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_dropChannelNoiseFactor_dB
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          Noise factor observed by drop channels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_expressChannelNoiseFactor_dB
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          Noise factor observed by express channels
+        </td>
+      </tr>
+      <tr>
+        <td>
+          oadm_noiseFactorReferenceBandwidth_nm
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          Reference bandwidth that measures the noise factor at the OADM 
+          amplifiers
+        </td>
+      </tr>
+      <tr>
+        <td>
+          dcm_channelDispersionMax_ps_per_nm
+        </td>
+        <td>
+          -827
+        </td>
+        <td>
+          Max (in absolute value) dispersion compensation a DCM can place 
+          (ps/nm). It is assumed to be the same for all wavelengths
+        </td>
+      </tr>
+      <tr>
+        <td>
+          dcm_channelDispersionMin_ps_per_nm
+        </td>
+        <td>
+          -276
+        </td>
+        <td>
+          Min (in absolute value) dispersion compensation a DCM can place 
+          (ps/nm). It is assumed to be the same for all wavelengths
+        </td>
+      </tr>
+      <tr>
+        <td>
+          dcm_PMD_ps
+        </td>
+        <td>
+          0.7
+        </td>
+        <td>
+          Polarization mode dispersion in ps added by the DCM
+        </td>
+      </tr>
+      <tr>
+        <td>
+          dcm_insertionLoss_dB
+        </td>
+        <td>
+          3.5
+        </td>
+        <td>
+          Maximum insertion loss added by the DCM
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_CD_dB
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          OSNR penalty caused by residual chromatic dispersion (assumed within 
+          limits)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_nonLinear_dB
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          OSNR penalty caused by the non-linear effects SPM, XPM, FWM and 
+          Brillouin / Raman scattering
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_PMD_dB
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          OSNR penalty caused by the polarization mode dispersion (assumed 
+          within limits)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_PDL_dB
+        </td>
+        <td>
+          0.3
+        </td>
+        <td>
+          OSNR penalty caused by polarization dispersion losses
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_transmitterChirp_dB
+        </td>
+        <td>
+          0.5
+        </td>
+        <td>
+          OSNR penalty caused by transmitter chirp
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_OADMCrosstalk_dB
+        </td>
+        <td>
+          0.8
+        </td>
+        <td>
+          OSNR penalty caused by the crosstalk at the OADMs
+        </td>
+      </tr>
+      <tr>
+        <td>
+          osnrPenalty_unassignedMargin_dB
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          OSNR penalty caused by not assigned margins (e.g. random effects, 
+          aging, ...)
+        </td>
+      </tr>
+    </table>
+    <h2>
+      PER LINK INFORMATION SUMMARY - Signal metrics at the input of end OADM
+    </h2>
+    <table border="1">
+      <tr>
+        <th>
+          <b>Link #</b>
+        </th>
+        <th>
+          <b>Length (km)</b>
+        </th>
+        <th>
+          <b># EDFAs</b>
+        </th>
+        <th>
+          <b># DCMs</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          e0 (id 8) (Valladolid --&gt; Palencia)
+        </td>
+        <td>
+          42.92
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          2.8
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e1 (id 9) (Palencia --&gt; Valladolid)
+        </td>
+        <td>
+          42.92
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          2.8
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e2 (id 10) (Palencia --&gt; Burgos)
+        </td>
+        <td>
+          78
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e3 (id 11) (Burgos --&gt; Palencia)
+        </td>
+        <td>
+          78
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e4 (id 12) (Burgos --&gt; Soria)
+        </td>
+        <td>
+          120
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          4.52
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e5 (id 13) (Soria --&gt; Burgos)
+        </td>
+        <td>
+          120
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          4.52
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e6 (id 14) (Soria --&gt; Segovia)
+        </td>
+        <td>
+          165
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          5.33
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e7 (id 15) (Segovia --&gt; Soria)
+        </td>
+        <td>
+          165
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          5.33
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e8 (id 16) (Segovia --&gt; &#193;vila)
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          3.2
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e9 (id 17) (&#193;vila --&gt; Segovia)
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          3.2
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e10 (id 18) (&#193;vila --&gt; Valladolid)
+        </td>
+        <td>
+          110.77
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          e11 (id 19) (Valladolid --&gt; &#193;vila)
+        </td>
+        <td>
+          110.77
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+    </table>
+    <h2>
+      PER ROUTE INFORMATION SUMMARY - Signal metrics at the transponder
+    </h2>
+    <table border="1">
+      <tr>
+        <th>
+          <b>Route #</b>
+        </th>
+        <th>
+          <b>Length (km)</b>
+        </th>
+        <th>
+          <b># EDFAs</b>
+        </th>
+        <th>
+          <b># DCMs</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          r0 (id 46) (Valladolid --&gt; Soria)
+        </td>
+        <td>
+          333.77
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          4
+        </td>
+        <td>
+          172.62
+        </td>
+        <td>
+          24.75
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          7.59
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r1 (id 47) (Valladolid --&gt; Burgos)
+        </td>
+        <td>
+          120.92
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          125.52
+        </td>
+        <td>
+          32.51
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          4.62
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r2 (id 48) (Palencia --&gt; Soria)
+        </td>
+        <td>
+          198
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          23.33
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          5.82
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r3 (id 50) (Burgos --&gt; Segovia)
+        </td>
+        <td>
+          285
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          140
+        </td>
+        <td>
+          26.44
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          6.99
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r4 (id 51) (Soria --&gt; &#193;vila)
+        </td>
+        <td>
+          223
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          28.05
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          6.22
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r5 (id 52) (Segovia --&gt; Valladolid)
+        </td>
+        <td>
+          168.77
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          182.62
+        </td>
+        <td>
+          27.46
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          5.41
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r6 (id 53) (&#193;vila --&gt; Palencia)
+        </td>
+        <td>
+          153.69
+        </td>
+        <td>
+          1
+        </td>
+        <td>
+          2
+        </td>
+        <td>
+          92.14
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          5.18
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          r7 (id 54) (Burgos --&gt; Soria)
+        </td>
+        <td>
+          454.69
+        </td>
+        <td>
+          3
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          298.14
+        </td>
+        <td>
+          20.93
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          8.88
+        </td>
+        <td>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+          <p>
+            
+          </p>
+        </td>
+      </tr>
+    </table>
+    <h2>
+      PER-LINK DETAILED INFORMATION
+    </h2>
+    <p>
+      Number of links: 12
+    </p>
+    <h3>
+      LINK # e0 (id 8) (Valladolid --&gt; Palencia)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          42.92
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (42.92 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          42.92
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          2.8
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e1 (id 9) (Palencia --&gt; Valladolid)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          42.92
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (42.92 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          42.92
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          2.8
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e2 (id 10) (Palencia --&gt; Burgos)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          78.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -320.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (78.0 km)
+        </td>
+        <td>
+          -320
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e3 (id 11) (Burgos --&gt; Palencia)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          78.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -320.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (78.0 km)
+        </td>
+        <td>
+          -320
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e4 (id 12) (Burgos --&gt; Soria)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          120.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -570.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -570
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          4.52
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e5 (id 13) (Soria --&gt; Burgos)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          120.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -570.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -570
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          4.52
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e6 (id 14) (Soria --&gt; Segovia)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          165.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60 130
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19 17
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0 130
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -500
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          4.69
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          4.75
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.77
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          165
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          5.33
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e7 (id 15) (Segovia --&gt; Soria)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          165.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60 130
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19 17
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0 130
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -500
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          4.69
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          4.75
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.77
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          165
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          5.33
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e8 (id 16) (Segovia --&gt; &#193;vila)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          58.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          58
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          3.2
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e9 (id 17) (&#193;vila --&gt; Segovia)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          58.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          58
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          3.2
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e10 (id 18) (&#193;vila --&gt; Valladolid)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          110.77
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -550
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      LINK # e11 (id 19) (Valladolid --&gt; &#193;vila)
+    </h3>
+    <table border="1">
+      <caption>
+        Link input information
+      </caption>
+      <tr>
+        <td>
+          Link length (km)
+        </td>
+        <td>
+          110.77
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA positions (km)
+        </td>
+        <td>
+          60
+        </td>
+      </tr>
+      <tr>
+        <td>
+          EDFA gains (dB)
+        </td>
+        <td>
+          19
+        </td>
+      </tr>
+      <tr>
+        <td>
+          DCM positions (km)
+        </td>
+        <td>
+          0
+        </td>
+      </tr>
+    </table>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -550
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h2>
+      PER-LIGHTPATH DETAILED INFORMATION
+    </h2>
+    <p>
+      Number of lightpaths: 8
+    </p>
+    <h3>
+      ROUTE # r0 (id 46) (Valladolid --&gt; Soria), Length: 333.77 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -550
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          4.41
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -165.38
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.47
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          168.77
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          182.62
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          5.41
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          168.77
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          182.62
+        </td>
+        <td>
+          26.7
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          5.45
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          168.77
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -317.38
+        </td>
+        <td>
+          26.7
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          5.5
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          228.77
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          42.62
+        </td>
+        <td>
+          26.7
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          6.31
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          228.77
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          42.62
+        </td>
+        <td>
+          25.84
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          6.33
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          298.77
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          462.62
+        </td>
+        <td>
+          25.84
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          7.16
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          298.77
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          -37.38
+        </td>
+        <td>
+          25.84
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          7.19
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          298.77
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          -37.38
+        </td>
+        <td>
+          24.75
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          7.21
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          333.77
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          172.62
+        </td>
+        <td>
+          24.75
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          7.59
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          333.77
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          172.62
+        </td>
+        <td>
+          24.58
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          7.61
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r1 (id 47) (Valladolid --&gt; Burgos), Length: 120.92 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (42.92 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          42.92
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          2.8
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          42.92
+        </td>
+        <td>
+          Input of DCM (comp -320.0 ps/nm)
+        </td>
+        <td>
+          -22.48
+        </td>
+        <td>
+          32.51
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          2.89
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          42.92
+        </td>
+        <td>
+          Input of SPAN (78.0 km)
+        </td>
+        <td>
+          -342.48
+        </td>
+        <td>
+          32.51
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          2.97
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120.92
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          125.52
+        </td>
+        <td>
+          32.51
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          4.62
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120.92
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          125.52
+        </td>
+        <td>
+          26.54
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          4.65
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r2 (id 48) (Palencia --&gt; Soria), Length: 198.0 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -320.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (78.0 km)
+        </td>
+        <td>
+          -320
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of DCM (comp -570.0 ps/nm)
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          3.74
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -422
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          3.8
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          138
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -62
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          4.91
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          138
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -62
+        </td>
+        <td>
+          23.33
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          4.93
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          198
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          23.33
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          5.82
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          198
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          298
+        </td>
+        <td>
+          23.12
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          5.84
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r3 (id 50) (Burgos --&gt; Segovia), Length: 285.0 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -570.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -570
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -210
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -8.5
+        </td>
+        <td>
+          4.52
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          150
+        </td>
+        <td>
+          29.73
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          4.58
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -350
+        </td>
+        <td>
+          29.73
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.63
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          180
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          29.73
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          5.57
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          180
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          10
+        </td>
+        <td>
+          28.15
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          5.59
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          250
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          430
+        </td>
+        <td>
+          28.15
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          6.52
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          250
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          -70
+        </td>
+        <td>
+          28.15
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          6.56
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          250
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          -70
+        </td>
+        <td>
+          26.44
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          6.57
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          285
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          140
+        </td>
+        <td>
+          26.44
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          6.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          285
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          140
+        </td>
+        <td>
+          26.18
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          7
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r4 (id 51) (Soria --&gt; &#193;vila), Length: 223.0 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -500
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          -140
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          280
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          4.69
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          4.75
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          130
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          -220
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.77
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          165
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          29.15
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          5.33
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          165
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          -10
+        </td>
+        <td>
+          28.05
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          5.37
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          165
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -290
+        </td>
+        <td>
+          28.05
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          5.42
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          223
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          28.05
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          6.22
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          223
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          58
+        </td>
+        <td>
+          26.8
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          6.24
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r5 (id 52) (Segovia --&gt; Valladolid), Length: 168.76999999999998 
+      km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -280
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          58
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          3.2
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          58
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          68
+        </td>
+        <td>
+          28.78
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          3.28
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          58
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -482
+        </td>
+        <td>
+          28.78
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          3.36
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          118
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -122
+        </td>
+        <td>
+          28.78
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          4.57
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          118
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -122
+        </td>
+        <td>
+          27.46
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          4.59
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          168.77
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          182.62
+        </td>
+        <td>
+          27.46
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          5.41
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          168.77
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          182.62
+        </td>
+        <td>
+          27.14
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          5.43
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r6 (id 53) (&#193;vila --&gt; Palencia), Length: 153.69 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -550
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          3.25
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          60
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -190
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          3.29
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          33.23
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          4.35
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          114.62
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          4.41
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          110.77
+        </td>
+        <td>
+          Input of SPAN (42.92 km)
+        </td>
+        <td>
+          -165.38
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.47
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          153.69
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          92.14
+        </td>
+        <td>
+          30.85
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          5.18
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          153.69
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          92.14
+        </td>
+        <td>
+          29.82
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          5.2
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+    </table>
+    <h3>
+      ROUTE # r7 (id 54) (Burgos --&gt; Soria), Length: 454.69 km
+    </h3>
+    <table border="1">
+      <caption>
+        Signal metrics evolution
+      </caption>
+      <tr>
+        <th>
+          <b>Position (km)</b>
+        </th>
+        <th>
+          <b>Position (description)</b>
+        </th>
+        <th>
+          <b>Chromatic Dispersion (ps/nm)</b>
+        </th>
+        <th>
+          <b>OSNR (dB)</b>
+        </th>
+        <th>
+          <b>Power per WDM channel (dBm)</b>
+        </th>
+        <th>
+          <b>Polarization Mode Dispersion (ps)</b>
+        </th>
+        <th>
+          <b>Warnings</b>
+        </th>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of OADM-ADD
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          3082.55
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of DCM (comp -320.0 ps/nm)
+        </td>
+        <td>
+          0
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          0.71
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          0
+        </td>
+        <td>
+          Input of SPAN (78.0 km)
+        </td>
+        <td>
+          -320
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          0.99
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          50.8
+        </td>
+        <td>
+          -17
+        </td>
+        <td>
+          3.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          148
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          3.74
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          78
+        </td>
+        <td>
+          Input of SPAN (42.92 km)
+        </td>
+        <td>
+          -132
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          3.8
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120.92
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          125.52
+        </td>
+        <td>
+          23.79
+        </td>
+        <td>
+          -8.23
+        </td>
+        <td>
+          4.62
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120.92
+        </td>
+        <td>
+          Input of DCM (comp -550.0 ps/nm)
+        </td>
+        <td>
+          125.52
+        </td>
+        <td>
+          23.25
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          4.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          120.92
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -424.48
+        </td>
+        <td>
+          23.25
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          4.72
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          180.92
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          -64.48
+        </td>
+        <td>
+          23.25
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          5.65
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          180.92
+        </td>
+        <td>
+          Input of SPAN (50.769999999999996 km)
+        </td>
+        <td>
+          -64.48
+        </td>
+        <td>
+          22.85
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          5.67
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          231.69
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          240.14
+        </td>
+        <td>
+          22.85
+        </td>
+        <td>
+          -6.19
+        </td>
+        <td>
+          6.35
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          231.69
+        </td>
+        <td>
+          Input of DCM (comp -280.0 ps/nm)
+        </td>
+        <td>
+          240.14
+        </td>
+        <td>
+          22.57
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          6.39
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          231.69
+        </td>
+        <td>
+          Input of SPAN (58.0 km)
+        </td>
+        <td>
+          -39.86
+        </td>
+        <td>
+          22.57
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          6.42
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          289.69
+        </td>
+        <td>
+          Input of OADM-EXPRESS
+        </td>
+        <td>
+          308.14
+        </td>
+        <td>
+          22.57
+        </td>
+        <td>
+          -12
+        </td>
+        <td>
+          7.11
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          289.69
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          308.14
+        </td>
+        <td>
+          21.64
+        </td>
+        <td>
+          6
+        </td>
+        <td>
+          7.15
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          289.69
+        </td>
+        <td>
+          Input of SPAN (60.0 km)
+        </td>
+        <td>
+          -191.86
+        </td>
+        <td>
+          21.64
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          7.18
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          349.69
+        </td>
+        <td>
+          Input of EDFA (gain 19.0 dB)
+        </td>
+        <td>
+          168.14
+        </td>
+        <td>
+          21.64
+        </td>
+        <td>
+          -12.5
+        </td>
+        <td>
+          7.82
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          349.69
+        </td>
+        <td>
+          Input of SPAN (70.0 km)
+        </td>
+        <td>
+          168.14
+        </td>
+        <td>
+          21.35
+        </td>
+        <td>
+          6.5
+        </td>
+        <td>
+          7.84
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          419.69
+        </td>
+        <td>
+          Input of DCM (comp -500.0 ps/nm)
+        </td>
+        <td>
+          588.14
+        </td>
+        <td>
+          21.35
+        </td>
+        <td>
+          -11
+        </td>
+        <td>
+          8.52
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          419.69
+        </td>
+        <td>
+          Input of EDFA (gain 17.0 dB)
+        </td>
+        <td>
+          88.14
+        </td>
+        <td>
+          21.35
+        </td>
+        <td>
+          -14.5
+        </td>
+        <td>
+          8.55
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          419.69
+        </td>
+        <td>
+          Input of SPAN (35.0 km)
+        </td>
+        <td>
+          88.14
+        </td>
+        <td>
+          20.93
+        </td>
+        <td>
+          2.5
+        </td>
+        <td>
+          8.56
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          454.69
+        </td>
+        <td>
+          Input of OADM-DROP
+        </td>
+        <td>
+          298.14
+        </td>
+        <td>
+          20.93
+        </td>
+        <td>
+          -6.25
+        </td>
+        <td>
+          8.88
+        </td>
+        <td>
+          
+        </td>
+      </tr>
+      <tr>
+        <td>
+          454.69
+        </td>
+        <td>
+          Receiver
+        </td>
+        <td>
+          298.14
+        </td>
+        <td>
+          20.86
+        </td>
+        <td>
+          -14
+        </td>
+        <td>
+          8.9
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+

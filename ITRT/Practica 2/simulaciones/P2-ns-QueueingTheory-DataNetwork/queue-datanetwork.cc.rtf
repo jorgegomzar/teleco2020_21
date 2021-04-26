@@ -1,0 +1,385 @@
+{\rtf1\ansi\deff0\deftab480
+
+{\fonttbl
+{\f000 Courier New;}
+{\f001 Courier New;}
+{\f002 Courier New;}
+{\f003 Courier New;}
+{\f004 Courier New;}
+{\f005 Courier New;}
+{\f006 Courier New;}
+{\f007 Courier New;}
+{\f008 Courier New;}
+{\f009 Courier New;}
+}
+
+{\colortbl
+\red000\green000\blue000;
+\red255\green255\blue255;
+\red000\green128\blue000;
+\red255\green255\blue255;
+\red255\green128\blue000;
+\red255\green255\blue255;
+\red000\green000\blue255;
+\red255\green255\blue255;
+\red128\green128\blue128;
+\red255\green255\blue255;
+\red128\green064\blue000;
+\red255\green255\blue255;
+\red000\green000\blue128;
+\red255\green255\blue255;
+\red000\green000\blue000;
+\red255\green255\blue255;
+\red128\green000\blue255;
+\red255\green255\blue255;
+\red000\green000\blue000;
+\red255\green255\blue255;
+}
+
+\f51\fs20\cb19\cf18 \highlight3\cf2 // Author: Juan I. Asensio (ETSIT Telecomunicaci\u-3?n -\par
+// Universidad de Valladolid - juaase@tel.uva.es)\par
+// 22/March/2015 - Last update 4/March/2021\par
+// Parts based on code by M. Lacage published in\par
+// E. Altman and T. Jim\u-3?nez, "NS Simulation for Beginners", Morgan & Claypool, 2012.\par
+//\par
+// Simulation of a simple UDP network. Comparison with queueing theory.\par
+\highlight1\cf0 \par
+\par
+\highlight11\cf10 #include "ns3/core-module.h"\par
+#include "ns3/network-module.h"\par
+#include "ns3/internet-module.h"\par
+#include "ns3/point-to-point-module.h"\par
+#include "ns3/applications-module.h"\par
+#include <string>\par
+#include <sstream>\par
+\highlight1\cf0 \par
+\highlight7\cf6\b using\highlight1\cf0\b0  \highlight7\cf6\b namespace\highlight1\cf0\b0  \highlight15\cf14 ns3\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\highlight15\cf14 NS_LOG_COMPONENT_DEFINE\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "QueueDataNetwork"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\highlight3\cf2 /////////////////////////////////////////////////////////////////////\par
+// SENDER CLASS (UDP Application with arbitrary traffic pattern)\par
+/////////////////////////////////////////////////////////////////////\par
+\highlight17\cf16 class\highlight1\cf0  \highlight15\cf14 Sender\highlight1\cf0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 public\highlight13\cf12\b :\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 Sender\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 SetCreationInterval\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 RandomVariable\highlight1\cf0  \highlight15\cf14 v\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 SetPacketSize\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 RandomVariable\highlight1\cf0  \highlight15\cf14 v\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 SetFixedPacketSize\highlight13\cf12\b (\highlight17\cf16\b0 int\highlight1\cf0  \highlight15\cf14 size\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 SetStream\highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 SetUdpSocket\highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >);\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 HandleRead\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 socket\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 long\highlight1\cf0  \highlight15\cf14 GetPacketCounter\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 Start\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 Stop\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 private\highlight13\cf12\b :\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 void\highlight1\cf0  \highlight15\cf14 DoSend\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 RandomVariable\highlight1\cf0  \highlight15\cf14 m_creationInterval\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight3\cf2 //Callback <void ,Ptr <Packet> > m_receiver;\par
+\highlight1\cf0 \tab \tab \highlight15\cf14 EventId\highlight1\cf0  \highlight15\cf14 m_sending\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 RandomVariable\highlight1\cf0  \highlight15\cf14 m_packetSize\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 int\highlight1\cf0  \highlight15\cf14 m_fixedPacketSize\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 m_socket\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 m_stream\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight17\cf16 unsigned\highlight1\cf0  \highlight17\cf16 long\highlight1\cf0  \highlight15\cf14 m_counter\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\par
+\highlight13\cf12\b \};\highlight1\cf0\b0 \par
+\par
+\par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 Sender\highlight13\cf12\b ()\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b :\highlight1\cf0\b0  \highlight15\cf14 m_fixedPacketSize\highlight13\cf12\b (\highlight5\cf4\b0 0\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \{\}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 DoSend\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 p\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight7\cf6\b if\highlight13\cf12 (\highlight15\cf14\b0 m_fixedPacketSize\highlight13\cf12\b ==\highlight5\cf4\b0 0\highlight13\cf12\b )\{\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 p\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Create\highlight13\cf12\b <\highlight15\cf14\b0 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 m_packetSize\highlight13\cf12\b .\highlight15\cf14\b0 GetValue\highlight13\cf12\b ());\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight1\cf0\b0  \highlight7\cf6\b else\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 p\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Create\highlight13\cf12\b <\highlight15\cf14\b0 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 m_fixedPacketSize\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\tab \highlight7\cf6\b if\highlight13\cf12 (\highlight15\cf14\b0 m_stream\highlight1\cf0  \highlight13\cf12\b !=\highlight1\cf0\b0  \highlight7\cf6\b NULL\highlight13\cf12 )\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \highlight13\cf12\b *\highlight15\cf14\b0 m_stream\highlight13\cf12\b ->\highlight15\cf14\b0 GetStream\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight1\cf0  \highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 "\\t"\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 p\highlight13\cf12\b ->\highlight15\cf14\b0 GetSize\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 endl\highlight13\cf12\b ;\highlight1\cf0\b0   \highlight3\cf2 //In simulation Time Now() a packet of p-GetSize() bytes has been generated\par
+\highlight1\cf0 \tab \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_socket\highlight13\cf12\b ->\highlight15\cf14\b0 Send\highlight13\cf12\b (\highlight15\cf14\b0 p\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_counter\highlight13\cf12\b ++;\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 sendInterval\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 m_creationInterval\highlight13\cf12\b .\highlight15\cf14\b0 GetValue\highlight1\cf0  \highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_sending\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight1\cf0  \highlight13\cf12\b ::\highlight1\cf0\b0  \highlight15\cf14 Schedule\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 sendInterval\highlight13\cf12\b ),\highlight1\cf0\b0 \par
+\tab \tab \highlight13\cf12\b &\highlight15\cf14\b0 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 DoSend\highlight13\cf12\b ,\highlight7\cf6 this\highlight1\cf0\b0  \highlight13\cf12\b );\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 long\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 GetPacketCounter\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight7\cf6\b return\highlight1\cf0\b0  \highlight15\cf14 m_counter\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 SetUdpSocket\highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 socket\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 m_socket\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 socket\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 SetStream\highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 m_stream\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 SetPacketSize\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 RandomVariable\highlight1\cf0  \highlight15\cf14 v\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_packetSize\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 v\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 SetFixedPacketSize\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 int\highlight1\cf0  \highlight15\cf14 v\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_fixedPacketSize\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 v\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 SetCreationInterval\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 RandomVariable\highlight1\cf0  \highlight15\cf14 v\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_creationInterval\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 v\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 Start\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_counter\highlight13\cf12\b =\highlight5\cf4\b0 0\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 DoSend\highlight1\cf0  \highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 Stop\highlight13\cf12\b (\highlight17\cf16\b0 void\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 m_sending\highlight13\cf12\b .\highlight15\cf14\b0 Cancel\highlight1\cf0  \highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 HandleRead\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 socket\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+  \highlight3\cf2 //NS_LOG_FUNCTION (this << socket);\par
+\highlight1\cf0   \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 packet\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+  \highlight15\cf14 Address\highlight1\cf0  \highlight15\cf14 from\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+  \highlight7\cf6\b while\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 packet\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 socket\highlight13\cf12\b ->\highlight15\cf14\b0 RecvFrom\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 from\highlight13\cf12\b ))\highlight1\cf0\b0 \par
+    \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+      \highlight7\cf6\b if\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 InetSocketAddress\highlight13\cf12\b ::\highlight15\cf14\b0 IsMatchingType\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 from\highlight13\cf12\b ))\highlight1\cf0\b0 \par
+        \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+          \highlight15\cf14 InetSocketAddress\highlight1\cf0  \highlight15\cf14 address\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 InetSocketAddress\highlight13\cf12\b ::\highlight15\cf14\b0 ConvertFrom\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 from\highlight13\cf12\b );\highlight1\cf0\b0 \par
+          \highlight15\cf14 NS_LOG_INFO\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "Received "\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 packet\highlight13\cf12\b ->\highlight15\cf14\b0 GetSize\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " bytes from "\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0 \par
+            \highlight15\cf14 address\highlight13\cf12\b .\highlight15\cf14\b0 GetIpv4\highlight13\cf12\b ());\highlight1\cf0\b0 \par
+        \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+    \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\highlight3\cf2 ////////////////////////////////////////////////////////////////////\par
+//Global Variables for calculating Average Buffer use\par
+\highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 DropTailQueue\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 lengthIntegrator\highlight13\cf12\b =\highlight5\cf4\b0 0\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 lastEvent\highlight13\cf12\b =\highlight5\cf4\b0 0\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\highlight3\cf2 ////////////////////////////////////////////////////////////////////\par
+//Queue Tracing callbacks\par
+\highlight17\cf16 static\highlight1\cf0  \highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 senderDrop\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight17\cf16\b0 const\highlight1\cf0  \highlight15\cf14 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 p\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight3\cf2 //If this message is displayed, DNSE3 fails...\par
+\highlight1\cf0 \tab \highlight3\cf2 //NS_LOG_UNCOND("sender QueueDrop: " << Simulator::Now ().GetNanoSeconds ());\par
+\highlight1\cf0 \tab \highlight13\cf12\b *\highlight15\cf14\b0 stream\highlight13\cf12\b ->\highlight15\cf14\b0 GetStream\highlight1\cf0  \highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight1\cf0  \highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight1\cf0  \highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 endl\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 static\highlight1\cf0  \highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 senderEnqueue\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight17\cf16\b0 const\highlight1\cf0  \highlight15\cf14 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 p\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight3\cf2 //IMPORTANT: the Queue class invokes this callback BEFORE the size of the Queue is updated\par
+\highlight1\cf0 \tab \highlight3\cf2 //see queue.cc (Enqueue method)\par
+\highlight1\cf0 \tab \highlight13\cf12\b *\highlight15\cf14\b0 stream\highlight13\cf12\b ->\highlight15\cf14\b0 GetStream\highlight1\cf0  \highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 "\\t\\t"\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetNPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b +\highlight5\cf4\b0 1\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight1\cf0\b0  \highlight15\cf14 endl\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 lengthIntegrator\highlight1\cf0  \highlight13\cf12\b +=\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetNPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b )*(\highlight15\cf14\b0 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b -\highlight1\cf0\b0  \highlight15\cf14 lastEvent\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 lastEvent\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight17\cf16 static\highlight1\cf0  \highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 senderDequeue\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 stream\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight17\cf16\b0 const\highlight1\cf0  \highlight15\cf14 Packet\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 p\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight3\cf2 //IMPORTANT: the Queue class invokes this callback AFTER the size of the Queue is updated\par
+\highlight1\cf0 \tab \highlight3\cf2 //see queue.cc (Enqueue method)\par
+\highlight1\cf0 \tab \highlight13\cf12\b *\highlight15\cf14\b0 stream\highlight13\cf12\b ->\highlight15\cf14\b0 GetStream\highlight1\cf0  \highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 "\\t\\t"\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetNPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight1\cf0\b0  \highlight15\cf14 endl\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 lengthIntegrator\highlight1\cf0  \highlight13\cf12\b +=\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetNPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b +\highlight5\cf4\b0 1\highlight13\cf12\b )*(\highlight15\cf14\b0 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b -\highlight1\cf0\b0  \highlight15\cf14 lastEvent\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 lastEvent\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Now\highlight13\cf12\b ().\highlight15\cf14\b0 GetNanoSeconds\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\highlight3\cf2 //This variable will store a "snapshot" of the number\par
+//of packets at a given time (e.g., almost at the end\par
+//of the simulation\par
+\highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 finalQueueLength\highlight13\cf12\b =\highlight5\cf4\b0 0\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\highlight3\cf2 //This callback will be invoked by the simulator\par
+//at a given time to register the number of packets\par
+//in the buffer\par
+\highlight17\cf16 void\highlight1\cf0 \par
+\highlight15\cf14 SetFinalQueueLength\highlight13\cf12\b (\highlight15\cf14\b0 ns3\highlight13\cf12\b ::\highlight15\cf14\b0 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 ns3\highlight13\cf12\b ::\highlight15\cf14\b0 DropTailQueue\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b )\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 finalQueueLength\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetNPackets\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\par
+\par
+\highlight3\cf2 ////////////////////////////////////////////////////////////////////\par
+// MAIN FUNCTION\par
+/////////////////////////////////////////////////////////////////////\par
+\highlight1\cf0 \par
+\highlight17\cf16 int\highlight1\cf0 \par
+\highlight15\cf14 main\highlight1\cf0  \highlight13\cf12\b (\highlight17\cf16\b0 int\highlight1\cf0  \highlight15\cf14 argc\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight17\cf16 char\highlight1\cf0  \highlight13\cf12\b *\highlight15\cf14\b0 argv\highlight13\cf12\b [])\highlight1\cf0\b0 \par
+\highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight17\cf16 bool\highlight1\cf0  \highlight15\cf14 tracing\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight7\cf6\b false\highlight13\cf12 ;\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 bool\highlight1\cf0  \highlight15\cf14 averaging\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight7\cf6\b false\highlight13\cf12 ;\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 bool\highlight1\cf0  \highlight15\cf14 fixedlength\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight7\cf6\b false\highlight13\cf12 ;\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 unsigned\highlight1\cf0  \highlight17\cf16 int\highlight1\cf0  \highlight15\cf14 rep\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 1\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 lambda\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 11.0\highlight13\cf12\b ;\highlight1\cf0\b0  \highlight3\cf2 //service requests per second\par
+\highlight1\cf0 \tab \highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 tmax\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 2000.0\highlight13\cf12\b ;\highlight1\cf0\b0  \highlight3\cf2 //simulation time length (default value might not be suitable)\par
+\highlight1\cf0 \tab \highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 meanPacketSize\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 1000.0\highlight13\cf12\b ;\highlight1\cf0\b0  \highlight3\cf2 //(bytes)\par
+\highlight1\cf0 \tab \highlight17\cf16 double\highlight1\cf0  \highlight15\cf14 bitRate\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 100000\highlight13\cf12\b ;\highlight1\cf0\b0  \highlight3\cf2 //bps\par
+\highlight1\cf0 \tab \highlight17\cf16 uint32_t\highlight1\cf0  \highlight15\cf14 senderIPBufferSize\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight5\cf4 300\highlight13\cf12\b ;\highlight1\cf0\b0  \highlight3\cf2 // In segments\par
+\highlight1\cf0 \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 string\highlight1\cf0  \highlight15\cf14 linkDelay\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight9\cf8 "300ns"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight15\cf14 CommandLine\highlight1\cf0  \highlight15\cf14 cmd\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "tracing"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "Tracing. Default: 0"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 tracing\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "averaging"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "Calculating average Q or not (not by default)"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 averaging\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "rep"\highlight13\cf12\b ,\highlight9\cf8\b0 "Rep"\highlight13\cf12\b ,\highlight15\cf14\b0 rep\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "lambda"\highlight13\cf12\b ,\highlight9\cf8\b0 "Lambda. Default: 11 pkts/sec."\highlight13\cf12\b ,\highlight15\cf14\b0 lambda\highlight1\cf0  \highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "meanPacketSize"\highlight13\cf12\b ,\highlight9\cf8\b0 "MeanPacketSize (bytes). Default: 1000 bytes."\highlight13\cf12\b ,\highlight15\cf14\b0 meanPacketSize\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "bitRate"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "Link BitRate (bps). Default: 100000 bps"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 bitRate\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "tmax"\highlight13\cf12\b ,\highlight9\cf8\b0 "Simulation time (seconds). Default: 10000 sec."\highlight13\cf12\b ,\highlight15\cf14\b0 tmax\highlight1\cf0  \highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "fixedlength"\highlight13\cf12\b ,\highlight9\cf8\b0 "Using fixed or exponential packet lengths (1=fixed, 0=exponential). Default: exponential"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 fixedlength\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "senderIPBufferSize"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "Number of IP packets the sender IP entity should be able to store in its buffer for forwarding. Default: 300 packets)"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 senderIPBufferSize\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 AddValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "linkDelay"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "Delay of the sender->r1 and r2->s2 p2p links. Default: 300ns."\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 linkDelay\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 cmd\highlight13\cf12\b .\highlight15\cf14\b0 Parse\highlight13\cf12\b (\highlight15\cf14\b0 argc\highlight13\cf12\b ,\highlight15\cf14\b0 argv\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\tab \highlight3\cf2 //Setting up trace files...\par
+\highlight1\cf0 \tab \highlight15\cf14 AsciiTraceHelper\highlight1\cf0  \highlight15\cf14 asciiTraceHelper\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 streamArrivals\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight7\cf6\b NULL\highlight13\cf12 ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 streamArrivals\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 asciiTraceHelper\highlight13\cf12\b .\highlight15\cf14\b0 CreateFileStream\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "P2-ns-QueueingTheory-arrivals.trace"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\tab \highlight15\cf14 SeedManager\highlight13\cf12\b ::\highlight15\cf14\b0 SetRun\highlight13\cf12\b (\highlight15\cf14\b0 rep\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight3\cf2 //Setting up topology and communications architecture\par
+\highlight1\cf0 \tab \highlight15\cf14 NodeContainer\highlight1\cf0  \highlight15\cf14 nodes\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 nodes\highlight13\cf12\b .\highlight15\cf14\b0 Create\highlight1\cf0  \highlight13\cf12\b (\highlight5\cf4\b0 2\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 PointToPointHelper\highlight1\cf0  \highlight15\cf14 pointToPoint\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 string\highlight1\cf0  \highlight15\cf14 bitRate_String\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 stringstream\highlight1\cf0  \highlight15\cf14 bitRate_Stream\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 bitRate_Stream\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 bitRate\highlight13\cf12\b /\highlight5\cf4\b0 1000\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 "Kbps\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 pointToPoint\highlight13\cf12\b .\highlight15\cf14\b0 SetDeviceAttribute\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "DataRate"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 StringValue\highlight13\cf12\b (\highlight15\cf14\b0 bitRate_Stream\highlight13\cf12\b .\highlight15\cf14\b0 str\highlight13\cf12\b ()));\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\tab \highlight15\cf14 pointToPoint\highlight13\cf12\b .\highlight15\cf14\b0 SetChannelAttribute\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "Delay"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 StringValue\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "2ms"\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 NetDeviceContainer\highlight1\cf0  \highlight15\cf14 devices\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 devices\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 pointToPoint\highlight13\cf12\b .\highlight15\cf14\b0 Install\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 nodes\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\par
+\tab \highlight3\cf2 // Setting up queue at sender's device\par
+\highlight1\cf0 \tab \highlight15\cf14 senderqueue\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 CreateObject\highlight13\cf12\b <\highlight15\cf14\b0 DropTailQueue\highlight13\cf12\b >();\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 SetAttribute\highlight13\cf12\b (\highlight9\cf8\b0 "MaxPackets"\highlight13\cf12\b ,\highlight15\cf14\b0 UintegerValue\highlight13\cf12\b (\highlight15\cf14\b0 senderIPBufferSize\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 PointToPointNetDevice\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 devsenderp2p\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 DynamicCast\highlight13\cf12\b <\highlight15\cf14\b0 PointToPointNetDevice\highlight13\cf12\b >\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 devices\highlight13\cf12\b .\highlight15\cf14\b0 Get\highlight13\cf12\b (\highlight5\cf4\b0 0\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 devsenderp2p\highlight13\cf12\b ->\highlight15\cf14\b0 SetQueue\highlight13\cf12\b (\highlight15\cf14\b0 senderqueue\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight3\cf2 //Setting callback for queue tracing\par
+\highlight1\cf0 \tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 senderstreamDrop\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 asciiTraceHelper\highlight13\cf12\b .\highlight15\cf14\b0 CreateFileStream\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "sender.queuedropped.trace"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 TraceConnectWithoutContext\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "Drop"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 MakeBoundCallback\highlight13\cf12\b (&\highlight15\cf14\b0 senderDrop\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 senderstreamDrop\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 senderstreamEnqueue\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 asciiTraceHelper\highlight13\cf12\b .\highlight15\cf14\b0 CreateFileStream\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "sender.enqueue.trace"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 TraceConnectWithoutContext\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "Enqueue"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 MakeBoundCallback\highlight13\cf12\b (&\highlight15\cf14\b0 senderEnqueue\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 senderstreamEnqueue\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 OutputStreamWrapper\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 senderstreamDequeue\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 asciiTraceHelper\highlight13\cf12\b .\highlight15\cf14\b0 CreateFileStream\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "sender.dequeue.trace"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 TraceConnectWithoutContext\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "Dequeue"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 MakeBoundCallback\highlight13\cf12\b (&\highlight15\cf14\b0 senderDequeue\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 senderstreamDequeue\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight3\cf2 //Addressing, setting up the UDP server\par
+\highlight1\cf0 \tab \highlight15\cf14 InternetStackHelper\highlight1\cf0  \highlight15\cf14 stack\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 stack\highlight13\cf12\b .\highlight15\cf14\b0 Install\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 nodes\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 Ipv4AddressHelper\highlight1\cf0  \highlight15\cf14 address\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 address\highlight13\cf12\b .\highlight15\cf14\b0 SetBase\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "10.1.1.0"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight9\cf8 "255.255.255.0"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 Ipv4InterfaceContainer\highlight1\cf0  \highlight15\cf14 interfaces\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 address\highlight13\cf12\b .\highlight15\cf14\b0 Assign\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 devices\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\tab \highlight15\cf14 PacketSinkHelper\highlight1\cf0  \highlight15\cf14 receiverHelper\highlight1\cf0  \highlight13\cf12\b (\highlight9\cf8\b0 "ns3::UdpSocketFactory"\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 InetSocketAddress\highlight13\cf12\b (\highlight15\cf14\b0 interfaces\highlight13\cf12\b .\highlight15\cf14\b0 GetAddress\highlight13\cf12\b (\highlight5\cf4\b0 1\highlight13\cf12\b ),\highlight1\cf0\b0  \highlight5\cf4 9\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 ApplicationContainer\highlight1\cf0  \highlight15\cf14 serverApps\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 receiverHelper\highlight13\cf12\b .\highlight15\cf14\b0 Install\highlight13\cf12\b (\highlight15\cf14\b0 nodes\highlight13\cf12\b .\highlight15\cf14\b0 Get\highlight13\cf12\b (\highlight5\cf4\b0 1\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\par
+\tab \highlight3\cf2 //Traffic generation\par
+\highlight1\cf0 \tab \highlight15\cf14 Sender\highlight1\cf0  \highlight13\cf12\b *\highlight15\cf14\b0 sender\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight7\cf6\b new\highlight1\cf0\b0  \highlight15\cf14 Sender\highlight1\cf0  \highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 SetCreationInterval\highlight13\cf12\b (\highlight15\cf14\b0 ExponentialVariable\highlight1\cf0  \highlight13\cf12\b (\highlight5\cf4\b0 1.0\highlight13\cf12\b /\highlight1\cf0\b0  \highlight15\cf14 lambda\highlight1\cf0  \highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight7\cf6\b if\highlight13\cf12 (!\highlight15\cf14\b0 fixedlength\highlight13\cf12\b )\{\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 SetPacketSize\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 ExponentialVariable\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 meanPacketSize\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight7\cf6 else\highlight13\cf12 \{\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 SetFixedPacketSize\highlight13\cf12\b (\highlight15\cf14\b0 meanPacketSize\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 SetStream\highlight13\cf12\b (\highlight15\cf14\b0 streamArrivals\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight3\cf2 //Socket creation (obtained from udp-echo-client.cc\par
+\highlight1\cf0 \tab \highlight15\cf14 TypeId\highlight1\cf0  \highlight15\cf14 tid\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 TypeId\highlight13\cf12\b ::\highlight15\cf14\b0 LookupByName\highlight13\cf12\b (\highlight9\cf8\b0 "ns3::UdpSocketFactory"\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Ptr\highlight13\cf12\b <\highlight15\cf14\b0 Socket\highlight13\cf12\b >\highlight1\cf0\b0  \highlight15\cf14 udp_socket\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 udp_socket\highlight1\cf0  \highlight13\cf12\b =\highlight1\cf0\b0  \highlight15\cf14 Socket\highlight13\cf12\b ::\highlight15\cf14\b0 CreateSocket\highlight13\cf12\b (\highlight15\cf14\b0 nodes\highlight13\cf12\b .\highlight15\cf14\b0 Get\highlight13\cf12\b (\highlight5\cf4\b0 0\highlight13\cf12\b ),\highlight15\cf14\b0 tid\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 udp_socket\highlight13\cf12\b ->\highlight15\cf14\b0 Bind\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 udp_socket\highlight13\cf12\b ->\highlight15\cf14\b0 Connect\highlight13\cf12\b (\highlight15\cf14\b0 InetSocketAddress\highlight13\cf12\b (\highlight15\cf14\b0 interfaces\highlight13\cf12\b .\highlight15\cf14\b0 GetAddress\highlight13\cf12\b (\highlight5\cf4\b0 1\highlight13\cf12\b ),\highlight1\cf0\b0  \highlight5\cf4 9\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 udp_socket\highlight13\cf12\b ->\highlight15\cf14\b0 SetRecvCallback\highlight13\cf12\b (\highlight15\cf14\b0 MakeCallback\highlight13\cf12\b (&\highlight15\cf14\b0 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 HandleRead\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 sender\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 SetUdpSocket\highlight13\cf12\b (\highlight15\cf14\b0 udp_socket\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\par
+\par
+\tab \highlight3\cf2 //Simulation Management\par
+\highlight1\cf0 \tab \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Schedule\highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight5\cf4\b0 0.0001\highlight13\cf12\b ),\highlight1\cf0\b0  \highlight13\cf12\b &\highlight15\cf14\b0 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 Start\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 sender\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight3\cf2 //This event will invoke the callback to register\par
+\highlight1\cf0 \tab \highlight3\cf2 //the number of packets in the buffer (e.g., at\par
+\highlight1\cf0 \tab \highlight3\cf2 //the 98% of the simulation time)\par
+\highlight1\cf0 \tab \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Schedule\highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight5\cf4\b0 0.98\highlight13\cf12\b *\highlight15\cf14\b0 tmax\highlight13\cf12\b ),\highlight1\cf0\b0  \highlight13\cf12\b &\highlight15\cf14\b0 SetFinalQueueLength\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Schedule\highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 tmax\highlight13\cf12\b ),\highlight1\cf0\b0  \highlight13\cf12\b &\highlight15\cf14\b0 Sender\highlight13\cf12\b ::\highlight15\cf14\b0 Stop\highlight13\cf12\b ,\highlight1\cf0\b0  \highlight15\cf14 sender\highlight13\cf12\b );\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 serverApps\highlight13\cf12\b .\highlight15\cf14\b0 Start\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight5\cf4\b0 0.0001\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 serverApps\highlight13\cf12\b .\highlight15\cf14\b0 Stop\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 Seconds\highlight1\cf0  \highlight13\cf12\b (\highlight15\cf14\b0 tmax\highlight13\cf12\b ));\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Run\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\tab \highlight15\cf14 Simulator\highlight13\cf12\b ::\highlight15\cf14\b0 Destroy\highlight13\cf12\b ();\highlight1\cf0\b0 \par
+\par
+\tab \highlight3\cf2 //Tracing\par
+\highlight1\cf0 \tab \highlight7\cf6\b if\highlight13\cf12 (\highlight15\cf14\b0 tracing\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 sender\highlight13\cf12\b ->\highlight15\cf14\b0 GetPacketCounter\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " UDP Datagrams Sent\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetTotalReceivedPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " Packets received by the sender queue\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 senderqueue\highlight13\cf12\b ->\highlight15\cf14\b0 GetTotalDroppedPackets\highlight13\cf12\b ()\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " Packets dropped from the sender queue\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 finalQueueLength\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " Packets in the buffer at the end of the simulation\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 "Average Buffer Utilization: "\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 lengthIntegrator\highlight13\cf12\b /\highlight5\cf4\b0 1000000000\highlight13\cf12\b /\highlight15\cf14\b0 tmax\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight9\cf8 " Packets\\n"\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight1\cf0\b0  \highlight7\cf6\b else\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \highlight7\cf6\b if\highlight13\cf12 (\highlight15\cf14\b0 averaging\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight13\cf12\b <<\highlight1\cf0\b0  \highlight13\cf12\b (\highlight15\cf14\b0 lengthIntegrator\highlight13\cf12\b /\highlight5\cf4\b0 1000000000\highlight13\cf12\b /\highlight15\cf14\b0 tmax\highlight13\cf12\b )\highlight1\cf0\b0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 endl\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight13\cf12\b \}\highlight1\cf0\b0  \highlight7\cf6\b else\highlight1\cf0\b0  \highlight13\cf12\b \{\highlight1\cf0\b0 \par
+\tab \tab \tab \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 cout\highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 finalQueueLength\highlight1\cf0  \highlight13\cf12\b <<\highlight1\cf0\b0  \highlight15\cf14 std\highlight13\cf12\b ::\highlight15\cf14\b0 endl\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\tab \tab \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+\tab \highlight13\cf12\b \}\highlight1\cf0\b0 \par
+  \tab \highlight3\cf2 //Freeing resources\par
+\highlight1\cf0 \tab \highlight7\cf6\b delete\highlight1\cf0\b0  \highlight15\cf14 sender\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\par
+\tab \highlight7\cf6\b return\highlight1\cf0\b0  \highlight5\cf4 0\highlight13\cf12\b ;\highlight1\cf0\b0 \par
+\highlight13\cf12\b \}\highlight1\cf0\b0 \par
+}
