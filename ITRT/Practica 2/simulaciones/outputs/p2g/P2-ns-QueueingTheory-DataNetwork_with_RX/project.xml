@@ -1,0 +1,60 @@
+<simulationpackage xsi:schemalocation="http://gsic.tel.uva.es/dnse3/spd_v0p8 spd_v0p9.xsd" xmlns="http://gsic.tel.uva.es/dnse3/spd_v0p9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<description>
+		<title>P2-ns-QueueingTheory-DataNetwork</title>
+		<textualdescription>Estudio de la teoria de colas en un modelo de red</textualdescription>
+	</description>
+	<parametertypes>
+		<integertype id="fixedlength">
+			<greaterthanorequalto>0</greaterthanorequalto>
+			<lessthanorequalto>1</lessthanorequalto>
+			<defaultvalue>0</defaultvalue>
+		</integertype>
+		<integertype id="averaging">
+			<greaterthanorequalto>0</greaterthanorequalto>
+			<lessthanorequalto>1</lessthanorequalto>
+			<defaultvalue>0</defaultvalue>
+		</integertype>
+		<seedtype id="rep" />
+		<rationaltype id="lambda">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>11</defaultvalue>
+		</rationaltype>
+		<rationaltype id="tmax">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>2000</defaultvalue>
+		</rationaltype>
+		<rationaltype id="meanPacketSize">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>1000</defaultvalue>
+		</rationaltype>
+		<rationaltype id="bitRate">
+			<greaterthan>0</greaterthan>
+			<defaultvalue>100000</defaultvalue>
+		</rationaltype>
+		<integertype id="senderIPBufferSize">
+			<defaultvalue>300</defaultvalue>
+		</integertype>
+		<stringtype id="linkDelay">
+			<defaultvalue>300ns</defaultvalue>
+		</stringtype>
+	</parametertypes>
+	<outputfilestructures>
+		<filestructure id="Generacion de paquetes" ismultilinefile="true">
+			<outputvar>T</outputvar>
+			<outputvar>packet_size</outputvar>
+		</filestructure>
+		<filestructure id="Tiempos de paquete" ismultilinefile="true">
+			<outputvar>T</outputvar>
+		</filestructure>
+		<filestructure id="Tamano Cola Final o Promedio" ismultilinefile="false">
+			<outputvar>Q</outputvar>
+		</filestructure>
+	</outputfilestructures>
+	<outputfiles>
+		<tabbedfile filestructureref="Generacion de paquetes">P2-ns-QueueingTheory-arrivals.trace</tabbedfile>
+		<resultfile filestructureref="Tamano Cola Final o Promedio">output</resultfile>
+		<tabbedfile filestructureref="Tiempos de paquete">sender.enqueue.trace</tabbedfile>
+		<tabbedfile filestructureref="Tiempos de paquete">sender.dequeue.trace</tabbedfile>
+		<tabbedfile filestructureref="Tiempos de paquete">sender.queuedropped.trace</tabbedfile>
+	</outputfiles>
+</simulationpackage>

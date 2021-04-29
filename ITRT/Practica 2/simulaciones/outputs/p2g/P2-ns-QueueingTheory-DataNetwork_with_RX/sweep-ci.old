@@ -1,0 +1,51 @@
+#!/bin/bash
+#Juan I. Asensio
+#2014-04-04
+#ETSI Telecomunicacion - Universidad de Valladolid
+#
+#Script for parapeter sweep simulation (a sample of size $1 for each simulation point)
+#This script launches xgraph for showing, at the same time, the $1 sweeps carried out
+#(further analysis with, e.g., octave is needed for calculating confidence intervals)
+
+#Name of the file where to dump the generated trace
+#The first column contains the value of the sweeped paratemer. The rest
+#of the columns contain the elements of the sample
+TRACEFILE=sweep-ci.trace
+#Name of the xgraph to generate
+TITLE="Barrido de tiempo de simulacion"
+
+#If it exists, the trace file is deleted
+if [ -e $TRACEFILE ]
+then
+  /bin/rm $TRACEFILE
+fi
+
+#Values of the parameter to "sweep"
+SWEEPS=""
+
+#xgraph axis names
+XUNITS="tmax_secs"
+YUNITS="packets"
+
+for sweep in $SWEEPS
+do
+  aggregator="";
+  for ((sampleelement=1; sampleelement<=$1; sampleelement++))
+  do
+  	output=`Debug/queue-datanetwork --tmax=$sweep --rep=$RANDOM`
+        aggregator="$aggregator $output"
+  	echo "Ejecutando simulacion para parametro $XUNITS con valor: $sweep. Repeticion: $sampleelement de $1"
+  done
+  echo "$sweep $aggregator" >> $TRACEFILE
+done
+
+#Ejecucion de xgraph
+echo "LANZANDO XGRAPH"
+aggregator="";
+for ((sampleelement=2; sampleelement<=$1+1; sampleelement++))
+do
+	aggregator="$aggregator -columns 1 $sampleelement $TRACEFILE"
+done
+xgraph -pl $aggregator &
+
+
