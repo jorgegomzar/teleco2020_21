@@ -146,7 +146,7 @@ Sender::HandleRead (Ptr<Socket> socket)
 
 ////////////////////////////////////////////////////////////////////
 //Global Variables for calculating Average Buffer use
-Ptr<DropTailQueue> senderqueue;
+Ptr<DropTailQueue> senderqueue, receiverqueue;
 double lengthIntegrator=0;
 double lastEvent=0;
 
@@ -201,8 +201,8 @@ SetFinalQueueLength(ns3::Ptr<ns3::DropTailQueue> senderqueue)
 // MAIN FUNCTION
 /////////////////////////////////////////////////////////////////////
 
-static void SinkRx (Ptr<OutputStreamWrapper> s, Ptr<const Packet> p, const Address a)  {
-	*s->GetStream() << Simulator::Now().GetNanoSeconds() << std::endl;
+static void SinkRx (Ptr<OutputStreamWrapper> s, Ptr<const Packet> p, const Address &a)  {
+	*s->GetStream () << Simulator::Now().GetNanoSeconds() << std::endl;
 }
 
 int main (int argc, char *argv[]) {
@@ -236,6 +236,8 @@ int main (int argc, char *argv[]) {
 	AsciiTraceHelper asciiTraceHelper;
 	Ptr<OutputStreamWrapper> streamArrivals = NULL;
 	streamArrivals = asciiTraceHelper.CreateFileStream ("P2-ns-QueueingTheory-arrivals.trace");
+
+
 
 	SeedManager::SetRun(rep);
 
@@ -274,6 +276,10 @@ int main (int argc, char *argv[]) {
 	senderqueue->TraceConnectWithoutContext ("Dequeue", MakeBoundCallback(&senderDequeue, senderstreamDequeue));
 
 
+
+
+
+
 	//Addressing, setting up the UDP server
 	InternetStackHelper stack;
 	stack.Install (nodes);
@@ -306,13 +312,12 @@ int main (int argc, char *argv[]) {
 	udp_socket->SetRecvCallback(MakeCallback(&Sender::HandleRead, sender));
 	sender->SetUdpSocket(udp_socket);
 
-
 	// Trazas del RX
 	// Creamos el fichero para las trazas del receptor
-	Ptr<OutputStreamWrapper> receiverstreamEnqueue = asciiTraceHelper.CreateFileStream("rx.enqueue.trace");
-	// Cada vez que se reciba un paquete se volcará el contenido del SinkRx al fichero anterior
-	senderqueue->TraceConnectWithoutContext("ReceiverEnqueue", MakeBoundCallback(&SinkRx, receiverstreamEnqueue));
+	Ptr<OutputStreamWrapper> receiverstreamEnqueue = asciiTraceHelper.CreateFileStream ("receiver.enqueue.trace");
 	Config::ConnectWithoutContext("/NodeList/1/ApplicationList/0/$ns3::PacketSink/Rx", MakeBoundCallback(&SinkRx, receiverstreamEnqueue));
+	senderqueue->TraceConnectWithoutContext ("ReceiverEnqueue", MakeBoundCallback(&SinkRx, receiverstreamEnqueue));
+
 
 	//Simulation Management
 	Simulator::Schedule(Seconds (0.0001), &Sender::Start, sender);
