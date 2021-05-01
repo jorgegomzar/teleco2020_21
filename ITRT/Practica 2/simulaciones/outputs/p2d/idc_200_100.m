@@ -1,7 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%       TOCA REPETIRLO
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 clf;
 % media teorica para Q segun teoria de colas
 mm1_teo_mean = load('mm1_teo_mean.csv');
