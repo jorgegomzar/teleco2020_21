@@ -95,3 +95,6 @@ title('M/M/1 - QQPLOT - M = 50 N = 200');
 subplot(2,2,4);
 qqplot(g200_mean);
 title('M/G/1 - QQPLOT - M = 50 N = 200');
+figure(5);
+hist(m200, res);
+title('Histograma: Distribución del tiempo de espera en la cola');
