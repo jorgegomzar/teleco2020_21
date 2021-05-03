@@ -1,0 +1,142 @@
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see http://www.gnu.org/licenses/.
+// 
+
+package Control.WRON;
+
+//
+// TODO auto-generated module
+//
+module Control_WRONS
+{
+        parameters:
+        double num_nodos;
+        double num_edge;
+        double num_lng_ond_max;
+        double num_txrx_max;
+        string algoritmo;
+        double num_tx;
+        double tiempo_corto @unit(s);
+        double tiempo_largo @unit(s);
+        double gran_tiempo @unit(s);
+        double carga_limite;
+        double tasa @unit(bps);
+        double tamanno_paquetes;
+        double num_procesadores;
+        double tiempo_encaminamiento @unit(s);
+        double intervalo_reconfiguracion @unit(s);
+
+
+        @display("bgb=240,260,#aecaee,#5aa206,2;bgp=26,10");
+    gates:
+        input in;
+        
+        
+    submodules:
+
+     control_SSWRON: Controlrwa {
+
+            parameters:
+                num_edge = num_edge;
+                tiempo_corto = tiempo_corto;
+                tiempo_largo = tiempo_largo;
+                gran_tiempo = gran_tiempo;
+
+                @display("p=105,148;i=block/star;b=32,30");
+
+        }
+
+
+        decisor: Decisor { //
+            parameters:
+
+                num_nodos = num_nodos;
+                num_edge = num_edge;
+                num_txrx_max = num_txrx_max;
+                num_lng_ond_max = num_lng_ond_max;
+                tamanno_paquetes = tamanno_paquetes;
+                num_procesadores = num_procesadores;
+                tiempo_encaminamiento = tiempo_encaminamiento;
+                tiempo_corto = tiempo_corto;
+                tiempo_largo = tiempo_largo;
+                intervalo_reconfiguracion = intervalo_reconfiguracion;
+                tasa = tasa;
+
+                @display("p=105,78;i=block/user;b=32,30");
+
+        }
+
+
+        rwa: MLDAHamilton { //
+            parameters:
+
+                num_nodos = num_nodos;
+                num_edge = num_edge;
+                num_txrx_max = num_txrx_max;
+                num_lng_ond_max = num_lng_ond_max;
+                tasa = tasa;
+                tamanno_paquetes = tamanno_paquetes;
+                num_procesadores = num_procesadores;
+                tiempo_encaminamiento = tiempo_encaminamiento;
+
+                @display("p=180,148;b=44,44,,#4296e7,#0e0e96,3");
+
+        }
+
+
+        establece_topologia: Guente {
+            parameters:
+                num_edge = num_edge;
+                num_nodos = num_nodos;
+                num_tx = num_tx;
+
+                @display("p=105,218;i=block/control;b=32,30");
+
+        }
+
+
+        Calcula_Delay: CalculaDelay { //
+            parameters:
+
+                num_nodos = num_nodos;
+                num_edge = num_edge;
+                num_txrx_max = num_txrx_max;
+                num_lng_ond_max = num_lng_ond_max;
+                carga_limite = carga_limite;
+                tasa = tasa;
+                tamanno_paquetes = tamanno_paquetes;
+                num_procesadores = num_procesadores;
+                tiempo_encaminamiento = tiempo_encaminamiento;
+                tiempo_corto = tiempo_corto;
+                intervalo_reconfiguracion = intervalo_reconfiguracion;
+
+                @display("p=180,48;b=44,44,,#4296e7,#0e0e96,3");
+
+        }
+
+
+
+        
+    connections allowunconnected:
+        in --> { @display("m=w"); } --> control_SSWRON.in;
+        control_SSWRON.out --> rwa.in;
+        rwa.out --> control_SSWRON.in_algoritmo;
+        control_SSWRON.out_topo_logica --> establece_topologia.in;
+        control_SSWRON.out_decisor --> decisor.in;
+        decisor.out --> control_SSWRON.in_decisor;
+        control_SSWRON.out_calcular --> Calcula_Delay.in;
+        Calcula_Delay.out --> control_SSWRON.in_calcular;
+    
+    
+}
