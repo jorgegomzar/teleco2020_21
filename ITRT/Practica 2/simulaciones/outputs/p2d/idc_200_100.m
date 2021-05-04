@@ -1,36 +1,15 @@
-clf;
-% media teorica para Q segun teoria de colas
+clf;% media teorica para Q segun teoria de colas
 mm1_teo_mean = load('mm1_teo_mean.csv');
-mg1_teo_mean = load('mg1_teo_mean.csv');
-% idc del 95% -> 100(1-alpha)
-alpha = 0.05;
-
+alpha = 0.05; % idc del 95% -> 100(1-alpha) 
 mm1 = load('p2d_mm1/output_Q.csv');
-mg1 = load('p2d_mg1/output_Q.csv');
-
-printf("#######################################################\n");
-printf("N = 200\n");
-printf("#######################################################\n");
-
-mfallo200 = 0
-gfallo200 = 0
-% IdC PARA 200 SIMULACIONES -> Tma del lim central
-for i=1:50;
-  index = randperm(10000);
-  mm1_shuf = mm1(index);
-  mg1_shuf = mg1(index);
-
-  m200 = mm1_shuf(1:200);
+mfallo200 = 0 % IdC PARA 200 SIMULACIONES -> Tma del lim central
+for i=1:100;
+  index = randperm(10000); mm1_shuf = mm1(index);
+  m200 = mm1_shuf(1:200); % muestra aleatoria de N=200
+  
   m200_mean = mean(m200);
-  m200_s = sqrt(var(m200));
-  m200_sigma_muestral = m200_s/sqrt(200);
-  m200_z = stdnormal_inv(alpha/2);
-
-  g200 = mg1_shuf(1:200);
-  g200_mean = mean(g200);
-  g200_s = sqrt(var(g200));
-  g200_sigma_muestral = g200_s/sqrt(200);
-  g200_z = stdnormal_inv(alpha/2);
+  m200_sigma_muestral = sqrt(var(m200)/200);
+  m200_z = stdnormal_inv(alpha/2); % z-valor
 
   % limites M/M/1
   lim_inf = m200_mean + m200_z * m200_sigma_muestral;
@@ -40,17 +19,6 @@ for i=1:50;
     printf(" [+] M/M/1 teo: %f, inf: %f, sup: %f\n", mm1_teo_mean, lim_inf, lim_sup);
   else
     printf(" [-] M/M/1 teo: %f, inf: %f, sup: %f\n", mm1_teo_mean, lim_inf, lim_sup);
-    mfallo200 = mfallo200 + 1;
-  endif
-
-  % limites M/G/1
-  lim_inf = g200_mean + g200_z * g200_sigma_muestral;
-  lim_sup = g200_mean - g200_z * g200_sigma_muestral;
-
-  if (mg1_teo_mean <= lim_sup && mg1_teo_mean >= lim_inf)
-    printf(" [+] M/G/1 teo: %f, inf: %f, sup: %f\n", mg1_teo_mean, lim_inf, lim_sup);
-  else
-    printf(" [-] M/G/1 teo: %f, inf: %f, sup: %f\n", mg1_teo_mean, lim_inf, lim_sup);
     mfallo200 = mfallo200 + 1;
   endif
 endfor;
