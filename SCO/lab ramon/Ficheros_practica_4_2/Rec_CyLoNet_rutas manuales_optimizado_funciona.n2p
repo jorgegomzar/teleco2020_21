@@ -1,0 +1,807 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<network description="" name="" version="4">
+	<node id="2" xCoord="-4.716666666666667" yCoord="41.65" name="Valladolid" isUp="true"/>
+	<node id="3" xCoord="-4.533333333333333" yCoord="42.016666666666666" name="Palencia" isUp="true"/>
+	<node id="4" xCoord="-3.6960924999999634" yCoord="42.3442896" name="Burgos" isUp="true"/>
+	<node id="5" xCoord="-2.6511915" yCoord="41.8151715" name="Soria" isUp="true"/>
+	<node id="6" xCoord="-4.116666666666666" yCoord="40.95" name="Segovia" isUp="true"/>
+	<node id="7" xCoord="-4.7" yCoord="40.65" name="Ávila" isUp="true"/>
+	<layer id="1" name="Physical Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<link id="8" originNodeId="2" destinationNodeId="3" capacity="5.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="9" originNodeId="3" destinationNodeId="2" capacity="5.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="10" originNodeId="3" destinationNodeId="4" capacity="5.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-320"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="11" originNodeId="4" destinationNodeId="3" capacity="5.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-320"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="12" originNodeId="4" destinationNodeId="5" capacity="5.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-570"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="13" originNodeId="5" destinationNodeId="4" capacity="5.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-570"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="14" originNodeId="5" destinationNodeId="6" capacity="5.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-500 -500"/>
+			<attribute key="dcmPositions_km" value="0 130"/>
+			<attribute key="edfaGains_dB" value="19 17"/>
+			<attribute key="edfaPositions_km" value="60 130"/>
+		</link>
+		<link id="15" originNodeId="6" destinationNodeId="5" capacity="5.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-500 -500"/>
+			<attribute key="dcmPositions_km" value="0 130"/>
+			<attribute key="edfaGains_dB" value="19 17"/>
+			<attribute key="edfaPositions_km" value="60 130"/>
+		</link>
+		<link id="16" originNodeId="6" destinationNodeId="7" capacity="5.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="17" originNodeId="7" destinationNodeId="6" capacity="5.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-280"/>
+			<attribute key="dcmPositions_km" value="0"/>
+		</link>
+		<link id="18" originNodeId="7" destinationNodeId="2" capacity="5.0" lengthInKm="110.77" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-550"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<link id="19" originNodeId="2" destinationNodeId="7" capacity="5.0" lengthInKm="110.77" propagationSpeedInKmPerSecond="200000.0" isUp="true">
+			<attribute key="dcmCDCompensation_ps_per_nm" value="-550"/>
+			<attribute key="dcmPositions_km" value="0"/>
+			<attribute key="edfaGains_dB" value="19"/>
+			<attribute key="edfaPositions_km" value="60"/>
+		</link>
+		<demand id="922" ingressNodeId="2" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="982"/>
+		</demand>
+		<demand id="924" ingressNodeId="2" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="983"/>
+		</demand>
+		<demand id="926" ingressNodeId="2" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="984"/>
+		</demand>
+		<demand id="928" ingressNodeId="2" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="985"/>
+		</demand>
+		<demand id="930" ingressNodeId="2" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="986"/>
+		</demand>
+		<demand id="932" ingressNodeId="3" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="987"/>
+		</demand>
+		<demand id="934" ingressNodeId="3" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="988"/>
+		</demand>
+		<demand id="936" ingressNodeId="3" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="989"/>
+		</demand>
+		<demand id="938" ingressNodeId="3" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="990"/>
+		</demand>
+		<demand id="940" ingressNodeId="3" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="991"/>
+		</demand>
+		<demand id="942" ingressNodeId="4" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="992"/>
+		</demand>
+		<demand id="944" ingressNodeId="4" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="993"/>
+		</demand>
+		<demand id="946" ingressNodeId="4" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="994"/>
+		</demand>
+		<demand id="948" ingressNodeId="4" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="995"/>
+		</demand>
+		<demand id="950" ingressNodeId="4" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="996"/>
+		</demand>
+		<demand id="952" ingressNodeId="5" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="997"/>
+		</demand>
+		<demand id="954" ingressNodeId="5" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="998"/>
+		</demand>
+		<demand id="956" ingressNodeId="5" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="999"/>
+		</demand>
+		<demand id="958" ingressNodeId="5" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1000"/>
+		</demand>
+		<demand id="960" ingressNodeId="5" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1001"/>
+		</demand>
+		<demand id="962" ingressNodeId="6" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1002"/>
+		</demand>
+		<demand id="964" ingressNodeId="6" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1003"/>
+		</demand>
+		<demand id="966" ingressNodeId="6" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1004"/>
+		</demand>
+		<demand id="968" ingressNodeId="6" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1005"/>
+		</demand>
+		<demand id="970" ingressNodeId="6" egressNodeId="7" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1006"/>
+		</demand>
+		<demand id="972" ingressNodeId="7" egressNodeId="2" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1007"/>
+		</demand>
+		<demand id="974" ingressNodeId="7" egressNodeId="3" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1008"/>
+		</demand>
+		<demand id="976" ingressNodeId="7" egressNodeId="4" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1009"/>
+		</demand>
+		<demand id="978" ingressNodeId="7" egressNodeId="5" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1010"/>
+		</demand>
+		<demand id="980" ingressNodeId="7" egressNodeId="6" offeredTraffic="1.0">
+			<attribute key="Coupled to layer 1 lightpath " value="1011"/>
+		</demand>
+		<sourceRouting>
+			<route id="923" demandId="922" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="8" currentSeqLinksAndProtectionSegments="8" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="982"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="925" demandId="924" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="8 10" currentSeqLinksAndProtectionSegments="8 10" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="983"/>
+				<attribute key="seqWavelengths" value="1 1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1 1"/>
+			</route>
+			<route id="927" demandId="926" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="8 10 12" currentSeqLinksAndProtectionSegments="8 10 12" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="984"/>
+				<attribute key="seqWavelengths" value="2 2 2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2 2 2"/>
+			</route>
+			<route id="929" demandId="928" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="19 17" currentSeqLinksAndProtectionSegments="19 17" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="985"/>
+				<attribute key="seqWavelengths" value="0 0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0 0"/>
+			</route>
+			<route id="931" demandId="930" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="19" currentSeqLinksAndProtectionSegments="19" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="986"/>
+				<attribute key="seqWavelengths" value="1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1"/>
+			</route>
+			<route id="933" demandId="932" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="9" currentSeqLinksAndProtectionSegments="9" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="987"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="935" demandId="934" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="10" currentSeqLinksAndProtectionSegments="10" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="988"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="937" demandId="936" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="10 12" currentSeqLinksAndProtectionSegments="10 12" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="989"/>
+				<attribute key="seqWavelengths" value="3 3"/>
+				<attribute key="seqWavelengthsInitialRoute" value="3 3"/>
+			</route>
+			<route id="939" demandId="938" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="9 19 17" currentSeqLinksAndProtectionSegments="9 19 17" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="990"/>
+				<attribute key="seqWavelengths" value="2 2 2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2 2 2"/>
+			</route>
+			<route id="941" demandId="940" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="9 19" currentSeqLinksAndProtectionSegments="9 19" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="991"/>
+				<attribute key="seqWavelengths" value="3 3"/>
+				<attribute key="seqWavelengthsInitialRoute" value="3 3"/>
+			</route>
+			<route id="943" demandId="942" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="11 9" currentSeqLinksAndProtectionSegments="11 9" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="992"/>
+				<attribute key="seqWavelengths" value="1 1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1 1"/>
+			</route>
+			<route id="945" demandId="944" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="11" currentSeqLinksAndProtectionSegments="11" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="993"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="947" demandId="946" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="12" currentSeqLinksAndProtectionSegments="12" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="994"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="949" demandId="948" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="12 14" currentSeqLinksAndProtectionSegments="12 14" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="995"/>
+				<attribute key="seqWavelengths" value="1 1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1 1"/>
+			</route>
+			<route id="951" demandId="950" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="11 9 19" currentSeqLinksAndProtectionSegments="11 9 19" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="996"/>
+				<attribute key="seqWavelengths" value="4 4 4"/>
+				<attribute key="seqWavelengthsInitialRoute" value="4 4 4"/>
+			</route>
+			<route id="953" demandId="952" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="14 16 18" currentSeqLinksAndProtectionSegments="14 16 18" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="997"/>
+				<attribute key="seqWavelengths" value="0 0 0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0 0 0"/>
+			</route>
+			<route id="955" demandId="954" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="13 11" currentSeqLinksAndProtectionSegments="13 11" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="998"/>
+				<attribute key="seqWavelengths" value="2 2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2 2"/>
+			</route>
+			<route id="957" demandId="956" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="13" currentSeqLinksAndProtectionSegments="13" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="999"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="959" demandId="958" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="14" currentSeqLinksAndProtectionSegments="14" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1000"/>
+				<attribute key="seqWavelengths" value="2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2"/>
+			</route>
+			<route id="961" demandId="960" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="14 16" currentSeqLinksAndProtectionSegments="14 16" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1001"/>
+				<attribute key="seqWavelengths" value="3 3"/>
+				<attribute key="seqWavelengthsInitialRoute" value="3 3"/>
+			</route>
+			<route id="963" demandId="962" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="16 18" currentSeqLinksAndProtectionSegments="16 18" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1002"/>
+				<attribute key="seqWavelengths" value="1 1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1 1"/>
+			</route>
+			<route id="965" demandId="964" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="15 13 11" currentSeqLinksAndProtectionSegments="15 13 11" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1003"/>
+				<attribute key="seqWavelengths" value="3 3 3"/>
+				<attribute key="seqWavelengthsInitialRoute" value="3 3 3"/>
+			</route>
+			<route id="967" demandId="966" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="15 13" currentSeqLinksAndProtectionSegments="15 13" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1004"/>
+				<attribute key="seqWavelengths" value="1 1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1 1"/>
+			</route>
+			<route id="969" demandId="968" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="15" currentSeqLinksAndProtectionSegments="15" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1005"/>
+				<attribute key="seqWavelengths" value="0"/>
+				<attribute key="seqWavelengthsInitialRoute" value="0"/>
+			</route>
+			<route id="971" demandId="970" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="16" currentSeqLinksAndProtectionSegments="16" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1006"/>
+				<attribute key="seqWavelengths" value="2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2"/>
+			</route>
+			<route id="973" demandId="972" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="18" currentSeqLinksAndProtectionSegments="18" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1007"/>
+				<attribute key="seqWavelengths" value="2"/>
+				<attribute key="seqWavelengthsInitialRoute" value="2"/>
+			</route>
+			<route id="975" demandId="974" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="18 8" currentSeqLinksAndProtectionSegments="18 8" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1008"/>
+				<attribute key="seqWavelengths" value="3 3"/>
+				<attribute key="seqWavelengthsInitialRoute" value="3 3"/>
+			</route>
+			<route id="977" demandId="976" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="17 15 13" currentSeqLinksAndProtectionSegments="17 15 13" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1009"/>
+				<attribute key="seqWavelengths" value="4 4 4"/>
+				<attribute key="seqWavelengthsInitialRoute" value="4 4 4"/>
+			</route>
+			<route id="979" demandId="978" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="18 8 10 12" currentSeqLinksAndProtectionSegments="18 8 10 12" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1010"/>
+				<attribute key="seqWavelengths" value="4 4 4 4"/>
+				<attribute key="seqWavelengthsInitialRoute" value="4 4 4 4"/>
+			</route>
+			<route id="981" demandId="980" carriedTraffic="1.0" occupiedCapacity="1.0" carriedTrafficIfNotFailing="1.0" occupiedLinkCapacityIfNotFailing="1.0" seqLinks="17" currentSeqLinksAndProtectionSegments="17" backupSegmentList="">
+				<attribute key="Coupled to layer 1 lightpath " value="1011"/>
+				<attribute key="seqWavelengths" value="1"/>
+				<attribute key="seqWavelengthsInitialRoute" value="1"/>
+			</route>
+		</sourceRouting>
+	</layer>
+	<layer id="80" name="Link Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<link id="982" originNodeId="2" destinationNodeId="3" capacity="256.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="922"/>
+			<attribute key="Coupled to layer 0 route " value="923"/>
+		</link>
+		<link id="983" originNodeId="2" destinationNodeId="4" capacity="256.0" lengthInKm="120.92" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="924"/>
+			<attribute key="Coupled to layer 0 route " value="925"/>
+		</link>
+		<link id="984" originNodeId="2" destinationNodeId="5" capacity="256.0" lengthInKm="240.92000000000002" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="2"/>
+			<attribute key="Coupled to layer 0 demand " value="926"/>
+			<attribute key="Coupled to layer 0 route " value="927"/>
+		</link>
+		<link id="985" originNodeId="2" destinationNodeId="6" capacity="256.0" lengthInKm="168.76999999999998" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="928"/>
+			<attribute key="Coupled to layer 0 route " value="929"/>
+		</link>
+		<link id="987" originNodeId="3" destinationNodeId="2" capacity="256.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="932"/>
+			<attribute key="Coupled to layer 0 route " value="933"/>
+		</link>
+		<link id="988" originNodeId="3" destinationNodeId="4" capacity="256.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="934"/>
+			<attribute key="Coupled to layer 0 route " value="935"/>
+		</link>
+		<link id="989" originNodeId="3" destinationNodeId="5" capacity="256.0" lengthInKm="198.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="3"/>
+			<attribute key="Coupled to layer 0 demand " value="936"/>
+			<attribute key="Coupled to layer 0 route " value="937"/>
+		</link>
+		<link id="990" originNodeId="3" destinationNodeId="6" capacity="256.0" lengthInKm="211.69" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="2"/>
+			<attribute key="Coupled to layer 0 demand " value="938"/>
+			<attribute key="Coupled to layer 0 route " value="939"/>
+		</link>
+		<link id="991" originNodeId="3" destinationNodeId="7" capacity="256.0" lengthInKm="153.69" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="3"/>
+			<attribute key="Coupled to layer 0 demand " value="940"/>
+			<attribute key="Coupled to layer 0 route " value="941"/>
+		</link>
+		<link id="992" originNodeId="4" destinationNodeId="2" capacity="256.0" lengthInKm="120.92" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="942"/>
+			<attribute key="Coupled to layer 0 route " value="943"/>
+		</link>
+		<link id="993" originNodeId="4" destinationNodeId="3" capacity="256.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="944"/>
+			<attribute key="Coupled to layer 0 route " value="945"/>
+		</link>
+		<link id="994" originNodeId="4" destinationNodeId="5" capacity="256.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="946"/>
+			<attribute key="Coupled to layer 0 route " value="947"/>
+		</link>
+		<link id="995" originNodeId="4" destinationNodeId="6" capacity="256.0" lengthInKm="285.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="948"/>
+			<attribute key="Coupled to layer 0 route " value="949"/>
+		</link>
+		<link id="996" originNodeId="4" destinationNodeId="7" capacity="256.0" lengthInKm="231.69" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="4"/>
+			<attribute key="Coupled to layer 0 demand " value="950"/>
+			<attribute key="Coupled to layer 0 route " value="951"/>
+		</link>
+		<link id="998" originNodeId="5" destinationNodeId="3" capacity="256.0" lengthInKm="198.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="2"/>
+			<attribute key="Coupled to layer 0 demand " value="954"/>
+			<attribute key="Coupled to layer 0 route " value="955"/>
+		</link>
+		<link id="999" originNodeId="5" destinationNodeId="4" capacity="256.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="956"/>
+			<attribute key="Coupled to layer 0 route " value="957"/>
+		</link>
+		<link id="1000" originNodeId="5" destinationNodeId="6" capacity="256.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="2"/>
+			<attribute key="Coupled to layer 0 demand " value="958"/>
+			<attribute key="Coupled to layer 0 route " value="959"/>
+		</link>
+		<link id="1001" originNodeId="5" destinationNodeId="7" capacity="256.0" lengthInKm="223.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="3"/>
+			<attribute key="Coupled to layer 0 demand " value="960"/>
+			<attribute key="Coupled to layer 0 route " value="961"/>
+		</link>
+		<link id="1002" originNodeId="6" destinationNodeId="2" capacity="256.0" lengthInKm="168.76999999999998" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="962"/>
+			<attribute key="Coupled to layer 0 route " value="963"/>
+		</link>
+		<link id="1003" originNodeId="6" destinationNodeId="3" capacity="256.0" lengthInKm="363.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="3"/>
+			<attribute key="Coupled to layer 0 demand " value="964"/>
+			<attribute key="Coupled to layer 0 route " value="965"/>
+		</link>
+		<link id="1004" originNodeId="6" destinationNodeId="4" capacity="256.0" lengthInKm="285.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="966"/>
+			<attribute key="Coupled to layer 0 route " value="967"/>
+		</link>
+		<link id="1005" originNodeId="6" destinationNodeId="5" capacity="256.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="0"/>
+			<attribute key="Coupled to layer 0 demand " value="968"/>
+			<attribute key="Coupled to layer 0 route " value="969"/>
+		</link>
+		<link id="1006" originNodeId="6" destinationNodeId="7" capacity="256.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="2"/>
+			<attribute key="Coupled to layer 0 demand " value="970"/>
+			<attribute key="Coupled to layer 0 route " value="971"/>
+		</link>
+		<link id="1008" originNodeId="7" destinationNodeId="3" capacity="256.0" lengthInKm="153.69" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="3"/>
+			<attribute key="Coupled to layer 0 demand " value="974"/>
+			<attribute key="Coupled to layer 0 route " value="975"/>
+		</link>
+		<link id="1009" originNodeId="7" destinationNodeId="4" capacity="256.0" lengthInKm="343.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="4"/>
+			<attribute key="Coupled to layer 0 demand " value="976"/>
+			<attribute key="Coupled to layer 0 route " value="977"/>
+		</link>
+		<link id="1010" originNodeId="7" destinationNodeId="5" capacity="256.0" lengthInKm="351.69" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="4"/>
+			<attribute key="Coupled to layer 0 demand " value="978"/>
+			<attribute key="Coupled to layer 0 route " value="979"/>
+		</link>
+		<link id="1011" originNodeId="7" destinationNodeId="6" capacity="256.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="20000.0" isUp="true">
+			<attribute key="Assigned wavelength " value="1"/>
+			<attribute key="Coupled to layer 0 demand " value="980"/>
+			<attribute key="Coupled to layer 0 route " value="981"/>
+		</link>
+		<demand id="1903" ingressNodeId="2" egressNodeId="3" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="0"/>
+		</demand>
+		<demand id="1906" ingressNodeId="2" egressNodeId="4" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="1"/>
+		</demand>
+		<demand id="1909" ingressNodeId="2" egressNodeId="5" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="2"/>
+		</demand>
+		<demand id="1912" ingressNodeId="2" egressNodeId="6" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="3"/>
+		</demand>
+		<demand id="1915" ingressNodeId="2" egressNodeId="7" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="4"/>
+		</demand>
+		<demand id="1918" ingressNodeId="3" egressNodeId="2" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="5"/>
+		</demand>
+		<demand id="1921" ingressNodeId="3" egressNodeId="4" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="6"/>
+		</demand>
+		<demand id="1924" ingressNodeId="3" egressNodeId="5" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="7"/>
+		</demand>
+		<demand id="1927" ingressNodeId="3" egressNodeId="6" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="8"/>
+		</demand>
+		<demand id="1930" ingressNodeId="3" egressNodeId="7" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="9"/>
+		</demand>
+		<demand id="1933" ingressNodeId="4" egressNodeId="2" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="10"/>
+		</demand>
+		<demand id="1936" ingressNodeId="4" egressNodeId="3" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="11"/>
+		</demand>
+		<demand id="1939" ingressNodeId="4" egressNodeId="5" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="12"/>
+		</demand>
+		<demand id="1942" ingressNodeId="4" egressNodeId="6" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="13"/>
+		</demand>
+		<demand id="1945" ingressNodeId="4" egressNodeId="7" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="14"/>
+		</demand>
+		<demand id="1948" ingressNodeId="5" egressNodeId="2" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="15"/>
+		</demand>
+		<demand id="1951" ingressNodeId="5" egressNodeId="3" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="16"/>
+		</demand>
+		<demand id="1954" ingressNodeId="5" egressNodeId="4" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="17"/>
+		</demand>
+		<demand id="1957" ingressNodeId="5" egressNodeId="6" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="18"/>
+		</demand>
+		<demand id="1960" ingressNodeId="5" egressNodeId="7" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="19"/>
+		</demand>
+		<demand id="1963" ingressNodeId="6" egressNodeId="2" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="20"/>
+		</demand>
+		<demand id="1966" ingressNodeId="6" egressNodeId="3" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="21"/>
+		</demand>
+		<demand id="1969" ingressNodeId="6" egressNodeId="4" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="22"/>
+		</demand>
+		<demand id="1972" ingressNodeId="6" egressNodeId="5" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="23"/>
+		</demand>
+		<demand id="1975" ingressNodeId="6" egressNodeId="7" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="24"/>
+		</demand>
+		<demand id="1978" ingressNodeId="7" egressNodeId="2" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="25"/>
+		</demand>
+		<demand id="1981" ingressNodeId="7" egressNodeId="3" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="26"/>
+		</demand>
+		<demand id="1984" ingressNodeId="7" egressNodeId="4" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="27"/>
+		</demand>
+		<demand id="1987" ingressNodeId="7" egressNodeId="5" offeredTraffic="48.0">
+			<attribute key="Associated to layer 2 demand " value="28"/>
+		</demand>
+		<demand id="1990" ingressNodeId="7" egressNodeId="6" offeredTraffic="256.0">
+			<attribute key="Associated to layer 2 demand " value="29"/>
+		</demand>
+		<sourceRouting>
+			<route id="1904" demandId="1903" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="982" currentSeqLinksAndProtectionSegments="982" backupSegmentList=""/>
+			<route id="1907" demandId="1906" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="983" currentSeqLinksAndProtectionSegments="983" backupSegmentList=""/>
+			<route id="1910" demandId="1909" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="984" currentSeqLinksAndProtectionSegments="984" backupSegmentList=""/>
+			<route id="1913" demandId="1912" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="985" currentSeqLinksAndProtectionSegments="985" backupSegmentList=""/>
+			<route id="1916" demandId="1915" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="982 991" currentSeqLinksAndProtectionSegments="982 991" backupSegmentList=""/>
+			<route id="1919" demandId="1918" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="987" currentSeqLinksAndProtectionSegments="987" backupSegmentList=""/>
+			<route id="1922" demandId="1921" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="988" currentSeqLinksAndProtectionSegments="988" backupSegmentList=""/>
+			<route id="1925" demandId="1924" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="989" currentSeqLinksAndProtectionSegments="989" backupSegmentList=""/>
+			<route id="1928" demandId="1927" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="990" currentSeqLinksAndProtectionSegments="990" backupSegmentList=""/>
+			<route id="1931" demandId="1930" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="991" currentSeqLinksAndProtectionSegments="991" backupSegmentList=""/>
+			<route id="1934" demandId="1933" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="992" currentSeqLinksAndProtectionSegments="992" backupSegmentList=""/>
+			<route id="1937" demandId="1936" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="993" currentSeqLinksAndProtectionSegments="993" backupSegmentList=""/>
+			<route id="1940" demandId="1939" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="994" currentSeqLinksAndProtectionSegments="994" backupSegmentList=""/>
+			<route id="1943" demandId="1942" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="995" currentSeqLinksAndProtectionSegments="995" backupSegmentList=""/>
+			<route id="1946" demandId="1945" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="996" currentSeqLinksAndProtectionSegments="996" backupSegmentList=""/>
+			<route id="1949" demandId="1948" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="998 987" currentSeqLinksAndProtectionSegments="998 987" backupSegmentList=""/>
+			<route id="1952" demandId="1951" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="998" currentSeqLinksAndProtectionSegments="998" backupSegmentList=""/>
+			<route id="1955" demandId="1954" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="999" currentSeqLinksAndProtectionSegments="999" backupSegmentList=""/>
+			<route id="1958" demandId="1957" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1000" currentSeqLinksAndProtectionSegments="1000" backupSegmentList=""/>
+			<route id="1961" demandId="1960" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="1001" currentSeqLinksAndProtectionSegments="1001" backupSegmentList=""/>
+			<route id="1964" demandId="1963" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1002" currentSeqLinksAndProtectionSegments="1002" backupSegmentList=""/>
+			<route id="1967" demandId="1966" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1003" currentSeqLinksAndProtectionSegments="1003" backupSegmentList=""/>
+			<route id="1970" demandId="1969" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1004" currentSeqLinksAndProtectionSegments="1004" backupSegmentList=""/>
+			<route id="1973" demandId="1972" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1005" currentSeqLinksAndProtectionSegments="1005" backupSegmentList=""/>
+			<route id="1976" demandId="1975" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1006" currentSeqLinksAndProtectionSegments="1006" backupSegmentList=""/>
+			<route id="1979" demandId="1978" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="1008 987" currentSeqLinksAndProtectionSegments="1008 987" backupSegmentList=""/>
+			<route id="1982" demandId="1981" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="1008" currentSeqLinksAndProtectionSegments="1008" backupSegmentList=""/>
+			<route id="1985" demandId="1984" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1009" currentSeqLinksAndProtectionSegments="1009" backupSegmentList=""/>
+			<route id="1988" demandId="1987" carriedTraffic="48.0" occupiedCapacity="48.0" carriedTrafficIfNotFailing="48.0" occupiedLinkCapacityIfNotFailing="48.0" seqLinks="1010" currentSeqLinksAndProtectionSegments="1010" backupSegmentList=""/>
+			<route id="1991" demandId="1990" carriedTraffic="256.0" occupiedCapacity="256.0" carriedTrafficIfNotFailing="256.0" occupiedLinkCapacityIfNotFailing="256.0" seqLinks="1011" currentSeqLinksAndProtectionSegments="1011" backupSegmentList=""/>
+		</sourceRouting>
+	</layer>
+	<layer id="171" name="Transport Layer" description="" linkCapacityUnitsName="" demandTrafficUnitsName="">
+		<link id="1876" originNodeId="2" destinationNodeId="3" capacity="16.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1877" originNodeId="2" destinationNodeId="4" capacity="16.0" lengthInKm="120.92" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1878" originNodeId="2" destinationNodeId="5" capacity="16.0" lengthInKm="240.92000000000002" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1879" originNodeId="2" destinationNodeId="6" capacity="16.0" lengthInKm="168.76999999999998" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1880" originNodeId="3" destinationNodeId="2" capacity="16.0" lengthInKm="42.92" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1881" originNodeId="3" destinationNodeId="4" capacity="16.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1882" originNodeId="3" destinationNodeId="5" capacity="16.0" lengthInKm="198.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1883" originNodeId="3" destinationNodeId="6" capacity="16.0" lengthInKm="211.69" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1884" originNodeId="3" destinationNodeId="7" capacity="16.0" lengthInKm="153.69" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1885" originNodeId="4" destinationNodeId="2" capacity="16.0" lengthInKm="120.92" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1886" originNodeId="4" destinationNodeId="3" capacity="16.0" lengthInKm="78.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1887" originNodeId="4" destinationNodeId="5" capacity="16.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1888" originNodeId="4" destinationNodeId="6" capacity="16.0" lengthInKm="285.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1889" originNodeId="4" destinationNodeId="7" capacity="16.0" lengthInKm="231.69" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1890" originNodeId="5" destinationNodeId="3" capacity="16.0" lengthInKm="198.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1891" originNodeId="5" destinationNodeId="4" capacity="16.0" lengthInKm="120.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1892" originNodeId="5" destinationNodeId="6" capacity="16.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1893" originNodeId="5" destinationNodeId="7" capacity="16.0" lengthInKm="223.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1894" originNodeId="6" destinationNodeId="2" capacity="16.0" lengthInKm="168.76999999999998" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1895" originNodeId="6" destinationNodeId="3" capacity="16.0" lengthInKm="363.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1896" originNodeId="6" destinationNodeId="4" capacity="16.0" lengthInKm="285.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1897" originNodeId="6" destinationNodeId="5" capacity="16.0" lengthInKm="165.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1898" originNodeId="6" destinationNodeId="7" capacity="16.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1899" originNodeId="7" destinationNodeId="3" capacity="16.0" lengthInKm="153.69" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1900" originNodeId="7" destinationNodeId="4" capacity="16.0" lengthInKm="343.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1901" originNodeId="7" destinationNodeId="5" capacity="16.0" lengthInKm="351.69" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<link id="1902" originNodeId="7" destinationNodeId="6" capacity="16.0" lengthInKm="58.0" propagationSpeedInKmPerSecond="20000.0" isUp="true"/>
+		<demand id="856" ingressNodeId="2" egressNodeId="3" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="857" ingressNodeId="2" egressNodeId="4" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="858" ingressNodeId="2" egressNodeId="5" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="859" ingressNodeId="2" egressNodeId="6" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="860" ingressNodeId="2" egressNodeId="7" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="861" ingressNodeId="3" egressNodeId="2" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="862" ingressNodeId="3" egressNodeId="4" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="863" ingressNodeId="3" egressNodeId="5" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="864" ingressNodeId="3" egressNodeId="6" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="865" ingressNodeId="3" egressNodeId="7" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="866" ingressNodeId="4" egressNodeId="2" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="867" ingressNodeId="4" egressNodeId="3" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="868" ingressNodeId="4" egressNodeId="5" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="869" ingressNodeId="4" egressNodeId="6" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="870" ingressNodeId="4" egressNodeId="7" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="871" ingressNodeId="5" egressNodeId="2" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="872" ingressNodeId="5" egressNodeId="3" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="873" ingressNodeId="5" egressNodeId="4" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="874" ingressNodeId="5" egressNodeId="6" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="875" ingressNodeId="5" egressNodeId="7" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="876" ingressNodeId="6" egressNodeId="2" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="877" ingressNodeId="6" egressNodeId="3" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="878" ingressNodeId="6" egressNodeId="4" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="879" ingressNodeId="6" egressNodeId="5" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="880" ingressNodeId="6" egressNodeId="7" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="881" ingressNodeId="7" egressNodeId="2" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="882" ingressNodeId="7" egressNodeId="3" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="883" ingressNodeId="7" egressNodeId="4" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="884" ingressNodeId="7" egressNodeId="5" offeredTraffic="3.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<demand id="885" ingressNodeId="7" egressNodeId="6" offeredTraffic="16.0">
+			<attribute key="Demanded STM Circuit Type " value="STM-16"/>
+		</demand>
+		<sourceRouting>
+			<route id="1905" demandId="856" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1876" currentSeqLinksAndProtectionSegments="1876" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="0"/>
+			</route>
+			<route id="1908" demandId="857" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1877" currentSeqLinksAndProtectionSegments="1877" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="1"/>
+			</route>
+			<route id="1911" demandId="858" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1878" currentSeqLinksAndProtectionSegments="1878" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="2"/>
+			</route>
+			<route id="1914" demandId="859" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1879" currentSeqLinksAndProtectionSegments="1879" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="3"/>
+			</route>
+			<route id="1917" demandId="860" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1876 1884" currentSeqLinksAndProtectionSegments="1876 1884" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="4"/>
+			</route>
+			<route id="1920" demandId="861" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1880" currentSeqLinksAndProtectionSegments="1880" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="5"/>
+			</route>
+			<route id="1923" demandId="862" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1881" currentSeqLinksAndProtectionSegments="1881" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="6"/>
+			</route>
+			<route id="1926" demandId="863" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1882" currentSeqLinksAndProtectionSegments="1882" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="7"/>
+			</route>
+			<route id="1929" demandId="864" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1883" currentSeqLinksAndProtectionSegments="1883" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="8"/>
+			</route>
+			<route id="1932" demandId="865" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1884" currentSeqLinksAndProtectionSegments="1884" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="9"/>
+			</route>
+			<route id="1935" demandId="866" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1885" currentSeqLinksAndProtectionSegments="1885" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="10"/>
+			</route>
+			<route id="1938" demandId="867" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1886" currentSeqLinksAndProtectionSegments="1886" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="11"/>
+			</route>
+			<route id="1941" demandId="868" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1887" currentSeqLinksAndProtectionSegments="1887" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="12"/>
+			</route>
+			<route id="1944" demandId="869" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1888" currentSeqLinksAndProtectionSegments="1888" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="13"/>
+			</route>
+			<route id="1947" demandId="870" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1889" currentSeqLinksAndProtectionSegments="1889" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="14"/>
+			</route>
+			<route id="1950" demandId="871" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1890 1880" currentSeqLinksAndProtectionSegments="1890 1880" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="15"/>
+			</route>
+			<route id="1953" demandId="872" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1890" currentSeqLinksAndProtectionSegments="1890" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="16"/>
+			</route>
+			<route id="1956" demandId="873" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1891" currentSeqLinksAndProtectionSegments="1891" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="17"/>
+			</route>
+			<route id="1959" demandId="874" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1892" currentSeqLinksAndProtectionSegments="1892" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="18"/>
+			</route>
+			<route id="1962" demandId="875" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1893" currentSeqLinksAndProtectionSegments="1893" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="19"/>
+			</route>
+			<route id="1965" demandId="876" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1894" currentSeqLinksAndProtectionSegments="1894" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="20"/>
+			</route>
+			<route id="1968" demandId="877" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1895" currentSeqLinksAndProtectionSegments="1895" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="21"/>
+			</route>
+			<route id="1971" demandId="878" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1896" currentSeqLinksAndProtectionSegments="1896" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="22"/>
+			</route>
+			<route id="1974" demandId="879" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1897" currentSeqLinksAndProtectionSegments="1897" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="23"/>
+			</route>
+			<route id="1977" demandId="880" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1898" currentSeqLinksAndProtectionSegments="1898" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="24"/>
+			</route>
+			<route id="1980" demandId="881" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1899 1880" currentSeqLinksAndProtectionSegments="1899 1880" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="25"/>
+			</route>
+			<route id="1983" demandId="882" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1899" currentSeqLinksAndProtectionSegments="1899" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="26"/>
+			</route>
+			<route id="1986" demandId="883" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1900" currentSeqLinksAndProtectionSegments="1900" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="27"/>
+			</route>
+			<route id="1989" demandId="884" carriedTraffic="3.0" occupiedCapacity="3.0" carriedTrafficIfNotFailing="3.0" occupiedLinkCapacityIfNotFailing="3.0" seqLinks="1901" currentSeqLinksAndProtectionSegments="1901" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="28"/>
+			</route>
+			<route id="1992" demandId="885" carriedTraffic="16.0" occupiedCapacity="16.0" carriedTrafficIfNotFailing="16.0" occupiedLinkCapacityIfNotFailing="16.0" seqLinks="1902" currentSeqLinksAndProtectionSegments="1902" backupSegmentList="">
+				<attribute key="Associated to Layer 1 demand " value="29"/>
+			</route>
+		</sourceRouting>
+	</layer>
+	<srg id="886" meanTimeToFailInHours="107409.39598763919" meanTimeToRepairInHours="12.0">
+		<link linkId="9"/>
+		<link linkId="8"/>
+	</srg>
+	<srg id="887" meanTimeToFailInHours="41610.51797228017" meanTimeToRepairInHours="12.0">
+		<link linkId="19"/>
+		<link linkId="18"/>
+	</srg>
+	<srg id="888" meanTimeToFailInHours="59097.31174089069" meanTimeToRepairInHours="12.0">
+		<link linkId="11"/>
+		<link linkId="10"/>
+	</srg>
+	<srg id="889" meanTimeToFailInHours="38409.05263157895" meanTimeToRepairInHours="12.0">
+		<link linkId="12"/>
+		<link linkId="13"/>
+	</srg>
+	<srg id="890" meanTimeToFailInHours="27930.583732057417" meanTimeToRepairInHours="12.0">
+		<link linkId="14"/>
+		<link linkId="15"/>
+	</srg>
+	<srg id="891" meanTimeToFailInHours="79479.833030853" meanTimeToRepairInHours="12.0">
+		<link linkId="17"/>
+		<link linkId="16"/>
+	</srg>
+</network>
