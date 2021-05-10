@@ -1,0 +1,3 @@
+# Partial Tkenv config file -- see $HOME/.tkenvrc as well
+inspector "SeisNodos" "SeisNodos" "2" "607x336+4+163:normal"
+

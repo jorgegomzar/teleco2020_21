@@ -1,0 +1,66 @@
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Lesser General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU Lesser General Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with this program.  If not, see http://www.gnu.org/licenses/.
+// 
+
+package Control;
+
+import Control.WRON.WRONS;
+
+//
+// TODO auto-generated module
+//
+module Control
+{
+        parameters:
+        double num_nodos;
+        double num_edge;
+        double num_txrx;
+        double num_lng_ond;
+        double tasa @unit(bps);
+        double num_procesadores;
+
+
+
+        @display("bgb=196,307,#aecaee,#5aa206,2;bgp=18,10");
+    
+    
+       submodules:
+
+        estado: Estado {
+
+            parameters:
+                num_nodos = num_nodos;
+                num_edge = num_edge;
+                num_lng_ond = num_lng_ond;
+                num_txrx = num_txrx;
+                iniciado = false;
+
+                @display("b=,,,#32d258,#319c30,;i=block/table_l;p=119,76");
+
+        }
+    
+    
+    
+       WRONs: WRONS {
+            parameters:
+                num_nodos = num_nodos;
+                num_edge = num_edge;
+                tasa = tasa;
+                num_tx = num_txrx;
+
+                @display("p=119,150;b=144,30,,#32d258,#319c30,");
+
+       }
+    
+}
