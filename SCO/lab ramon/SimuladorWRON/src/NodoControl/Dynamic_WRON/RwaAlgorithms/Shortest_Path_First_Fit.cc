@@ -35,8 +35,7 @@ void Shortest_Path_First_Fit::initialize(int stage)
 	}
 }
 
-void Shortest_Path_First_Fit::handleMessage(cMessage *msg)
-{
+void Shortest_Path_First_Fit::handleMessage(cMessage *msg) {
     //Acceso al módulo estado con toda la información de la red.
 
 	cModule *c_modulo_estado = getParentModule()->getParentModule()->getParentModule()->getSubmodule("estado");
@@ -51,53 +50,68 @@ void Shortest_Path_First_Fit::handleMessage(cMessage *msg)
 	int i;
 	int j;
 	int mejor_w=-1;
-	int camino=-1;
+	int camino=0;
+	int num_saltos=-1, id_link=-1;
+	int num_links_have_wavelength_free=0;
 
-	bool libre;
+	bool libre = false;
     RutaYLong *paquete_ruta_y_longonda;
 
+    num_lng_ond=(int)par("num_lng_ond");
+    num_nodos=(int)par("num_nodos");
 
-    switch (msg->getKind())
-    {
 
-        case PETICION_LIGHTPATH:
-        {
+    switch (msg->getKind()) {
+
+        case PETICION_LIGHTPATH: {
 
             PeticionLightpath *mensaje_peticion = check_and_cast<PeticionLightpath *>(msg);
 
             origen = mensaje_peticion->getNodo_origen();
             destino = mensaje_peticion->getNodo_destino();
 
-            for(w=0;w<num_lng_ond;w++) {
-                    for(i=0;i<num_enlaces;i++) {
-                        if(modulo_estado->checkChannelAvailability(i,w)==true) {
-                            enlaces_en_topologia[i]->enable();
-                        }
-                    }
+            // Comprobar que hay Tx y Rx disponibles
+            if (modulo_estado->checkTxAvailability(origen) and modulo_estado->checkRxAvailability(destino)) {
 
+                // Comprobamos que todos los enlaces tienen una misma longitud de onda disponible
+                num_saltos = modulo_estado->pathDistance(origen, destino, camino);
+                for(i=0;i<num_lng_ond;i++) {
+                    num_links_have_wavelength_free = 0;
+                    for(j=0; j<num_saltos; j++)
+                        if (modulo_estado->checkChannelAvailability(modulo_estado->linkInPath(origen, destino, camino, j),i))
+                            num_links_have_wavelength_free++;
+
+                    if(num_links_have_wavelength_free == num_saltos) { // Todos los enlaces tienen la long. de onda disponible
+                        mejor_w = i;
+                        libre = true;
+                        EV << "Encontrada longitud de onda disponible: " << mejor_w << std::endl;
+                        break;
+                    }
+                }
             }
 
-            // Vamos a comprobar que el origen tiene un TX listo
+            if(libre)
+                EV << "Se ha podido establecer el enlace entre el origen y el receptor" << std::endl;
+            else
+                EV << "No se ha podido establecer el enlace entre el origen y el receptor" << std::endl;
 
-            // Vamos a comprobar que el destino tiene un RX listo
+            paquete_ruta_y_longonda = new RutaYLong("Paquete con Ruta y Longitud Onda",RUTA_Y_LONG_ONDA);
+            paquete_ruta_y_longonda->setNodo_origen(origen);
+            paquete_ruta_y_longonda->setNodo_destino(destino);
+            paquete_ruta_y_longonda->setTiempo_servicio(mensaje_peticion->getTiempo_servicio());
+            paquete_ruta_y_longonda->setLongitud_onda(mejor_w);
+            paquete_ruta_y_longonda->setRutaArraySize((unsigned int)num_saltos);
+            for(j=0; j<num_saltos; j++) {
+                id_link = modulo_estado->linkInPath(origen, destino, camino, j);
+                paquete_ruta_y_longonda->setRuta(j,id_link);
+            }
 
 
-              //          paquete_ruta_y_longonda = new RutaYLong("Paquete con Ruta y Longitud Onda",RUTA_Y_LONG_ONDA);
-              //          paquete_ruta_y_longonda->setNodo_origen(origen);
-              //          paquete_ruta_y_longonda->setNodo_destino(destino);
-              //          paquete_ruta_y_longonda->setTiempo_servicio(mensaje_peticion->getTiempo_servicio());
-              //          paquete_ruta_y_longonda->setLongitud_onda(mejor_w);
-              //          paquete_ruta_y_longonda->setRutaArraySize((unsigned int)rutas[mejor_w].longitud);
-              //          paquete_ruta_y_longonda->setRuta(i,j);
 
-
-
-                if((proteccionActivada==false)||(paquete_ruta_y_longonda->getLongitud_onda()<0))
-                {
-                    //send(paquete_ruta_y_longonda,"out_control_rwa");
+                if((proteccionActivada==false)||(paquete_ruta_y_longonda->getLongitud_onda()<0)) {
+                    send(paquete_ruta_y_longonda,"out_control_rwa");
                 }
-                else
-                {
+                else {
                     paquete_ruta_y_longonda->setProteccion_activada(true);
                     send(paquete_ruta_y_longonda,"out_proteccion");
 
@@ -108,13 +122,11 @@ void Shortest_Path_First_Fit::handleMessage(cMessage *msg)
                 break;
         }
 
-        case RUTA_Y_LONG_ONDA:
-        {
+        case RUTA_Y_LONG_ONDA: {
 
             paquete_ruta_y_longonda=check_and_cast <RutaYLong*> (msg);
 
-            if(paquete_ruta_y_longonda->getLongitud_onda_proteccion()<0)
-            {
+            if(paquete_ruta_y_longonda->getLongitud_onda_proteccion()<0) {
                 paquete_ruta_y_longonda->setLongitud_onda(-1);
             }
             send(paquete_ruta_y_longonda,"out_control_rwa");

@@ -1,0 +1,5 @@
+       Red	    Num nodos	 Num Tx/Rx	 Num lng onda	         Método RWA      	 Carga 	      Prob. bloqueo	 Inter confi	 Fecha y hora
+ SeisNodos	         6	      10	         5	       Shortest_Path_First_Fit	  0.900000	0.000000e+00	0.000000e+00	10/05/21 19:41:27
+ SeisNodos	         6	      10	         5	       Shortest_Path_First_Fit	  0.900000	2.091667e-01	1.256145e-02	10/05/21 19:46:55
+ SeisNodos	         6	      10	         5	          Shortest_Path_Random	  0.900000	0.000000e+00	0.000000e+00	10/05/21 20:01:37
+ SeisNodos	         6	      10	         5	          Shortest_Path_Random	  0.900000	0.000000e+00	0.000000e+00	10/05/21 20:01:58

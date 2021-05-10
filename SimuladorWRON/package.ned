@@ -1,3 +1,0 @@
-package simuladorWRON;
-
-@license(LGPL);

@@ -53,12 +53,18 @@ void Shortest_Path_Random::handleMessage(cMessage *msg)
 	int j;
 	int mejor_w=-1;
 	int camino=-1;
+    int num_saltos=-1, id_link=-1;
+    int num_links_have_wavelength_free=0;
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+	std::array<int,5> longitudes_onda {0,1,2,3,4};
+
+    shuffle (longitudes_onda.begin(), longitudes_onda.end(), std::default_random_engine(seed));
 
     //Vectores para ordenar las longitudes de onda
 	int orden_lng_ond[num_lng_ond];
 	int auxiliar_lng_ond[num_lng_ond];
 
-	bool libre;
+	bool libre=false;
 
 
     RutaYLong *paquete_ruta_y_longonda;
@@ -75,16 +81,44 @@ void Shortest_Path_Random::handleMessage(cMessage *msg)
             origen = mensaje_peticion->getNodo_origen();
             destino = mensaje_peticion->getNodo_destino();
 
+            // Comprobar que hay Tx y Rx disponibles
+            if (modulo_estado->checkTxAvailability(origen) and modulo_estado->checkRxAvailability(destino)) {
+
+                // Comprobamos que todos los enlaces tienen una misma longitud de onda disponible
+                num_saltos = modulo_estado->pathDistance(origen, destino, camino);
+                for(i=0;i<num_lng_ond;i++) {
+                    num_links_have_wavelength_free = 0;
+                    for(j=0; j<num_saltos; j++)
+                        if (modulo_estado->checkChannelAvailability(modulo_estado->linkInPath(origen, destino, camino, j),longitudes_onda[i]))
+                            num_links_have_wavelength_free++;
+
+                    if(num_links_have_wavelength_free == num_saltos) { // Todos los enlaces tienen la long. de onda disponible
+                        mejor_w = i;
+                        libre = true;
+                        EV << "Encontrada longitud de onda disponible: " << mejor_w << std::endl;
+                        break;
+                    }
+                }
+            }
+
+            if(libre)
+                EV << "Se ha podido establecer el enlace entre el origen y el receptor" << std::endl;
+            else
+                EV << "No se ha podido establecer el enlace entre el origen y el receptor" << std::endl;
 
 
 
-              //          paquete_ruta_y_longonda = new RutaYLong("Paquete con Ruta y Longitud Onda",RUTA_Y_LONG_ONDA);
-              //          paquete_ruta_y_longonda->setNodo_origen(origen);
-              //          paquete_ruta_y_longonda->setNodo_destino(destino);
-              //          paquete_ruta_y_longonda->setTiempo_servicio(mensaje_peticion->getTiempo_servicio());
-              //          paquete_ruta_y_longonda->setLongitud_onda(mejor_w);
-              //          paquete_ruta_y_longonda->setRutaArraySize((unsigned int)rutas[mejor_w].longitud);
-              //          paquete_ruta_y_longonda->setRuta(i,j);
+            paquete_ruta_y_longonda = new RutaYLong("Paquete con Ruta y Longitud Onda",RUTA_Y_LONG_ONDA);
+            paquete_ruta_y_longonda->setNodo_origen(origen);
+            paquete_ruta_y_longonda->setNodo_destino(destino);
+            paquete_ruta_y_longonda->setTiempo_servicio(mensaje_peticion->getTiempo_servicio());
+            paquete_ruta_y_longonda->setLongitud_onda(mejor_w);
+            paquete_ruta_y_longonda->setRutaArraySize((unsigned int)num_saltos);
+
+            for(j=0; j<num_saltos; j++) {
+                id_link = modulo_estado->linkInPath(origen, destino, camino, j);
+                paquete_ruta_y_longonda->setRuta(j,id_link);
+            }
 
 
 
