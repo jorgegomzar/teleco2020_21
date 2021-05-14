@@ -68,8 +68,8 @@ function plottraffic(data, plotposition, mytitle, mycolor, resolution, step)
 endfunction
 
 
-plotx=1;
-ploty=3;
+plotx=2;
+ploty=4;
 step=10; %sec (integration interval)
 resolution=1e9; %times in traces are in nanoseconds...
 
@@ -82,10 +82,26 @@ catch
         warning(lasterr());
 end_try_catch
 
+%RECEIVED TRAFFIC AT sPlus
+try
+	sPlusdata=load('P3-DiffServ-sPlus-arrivals.trace');
+	plottraffic(sPlusdata, 2, "TRAFFIC GENERATED AT sPlus", "black", resolution, step);
+catch
+        warning(lasterr());
+end_try_catch
+
+%RECEIVED TRAFFIC AT s2 port 9
+try
+	s2data=load('P3-DiffServ-s2-arrivals_9.trace');
+	plottraffic(s2data, 3, "TRAFFIC RECEIVED AT s2 port 9", "black", resolution, step);
+catch
+        warning(lasterr());
+end_try_catch
+
 %RECEIVED TRAFFIC AT s2
 try
-	s2data=load('P3-DiffServ-s2-arrivals.trace');
-	plottraffic(s2data, 2, "TRAFFIC RECEIVED AT s2", "black", resolution, step);
+	s2data2=load('P3-DiffServ-s2-arrivals_10.trace');
+	plottraffic(s2data2, 4, "TRAFFIC RECEIVED AT s2 port 10", "black", resolution, step);
 catch
         warning(lasterr());
 end_try_catch
@@ -93,10 +109,31 @@ end_try_catch
 %DROPPED NON-CONFORMANT PACKETS AT THE POLICING POINT (before enqueueing)
 try
 	r1DropNonConformantAFBE=load('r1.DropNonConformantAFBE.trace');
-	plottraffic(r1DropNonConformantAFBE, 3, "TRAFFIC DROPPED (before enqueueing) AT r1", "red", resolution, step);
+	plottraffic(r1DropNonConformantAFBE, 5, "TRAFFIC DROPPED (before enqueueing) AT r1", "red", resolution, step);
 catch
 	warning(lasterr());
 end_try_catch
 
-pause();
+% NEW plots
+try
+	r1DropNonConformantAFBE=load('r1.AQMDropAF1.trace');
+	plottraffic(r1DropNonConformantAFBE, 6, "AF1 AQM TRAFFIC DROPPED AT r1 AF1", "red", resolution, step);
+catch
+	warning(lasterr());
+end_try_catch
+
+try
+	r1DropNonConformantAFBE=load('r1.DropTailAF1.trace');
+	plottraffic(r1DropNonConformantAFBE, 7, "AF1 TRAFFIC DROPPED AT r1 AF1", "red", resolution, step);
+catch
+	warning(lasterr());
+end_try_catch
+
+try
+	r1DropNonConformantAFBE=load('r1.DropTailBE.trace');
+	plottraffic(r1DropNonConformantAFBE, 8, "BE TRAFFIC DROPPED AT r1", "red", resolution, step);
+catch
+	warning(lasterr());
+end_try_catch
+
 
