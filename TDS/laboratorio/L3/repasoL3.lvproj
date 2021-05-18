@@ -10,9 +10,11 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
-		<Item Name="dft_normalizada.vi" Type="VI" URL="../dft_normalizada.vi"/>
-		<Item Name="filtro_FIR.vi" Type="VI" URL="../filtro_FIR.vi"/>
-		<Item Name="L3.1.vi" Type="VI" URL="../L3.1.vi"/>
+		<Item Name="DFT normalizada.vi" Type="VI" URL="../DFT normalizada.vi"/>
+		<Item Name="expansor_y_kaisser.vi" Type="VI" URL="../expansor_y_kaisser.vi"/>
+		<Item Name="kaisser.vi" Type="VI" URL="../kaisser.vi"/>
+		<Item Name="kw_hamming.vi" Type="VI" URL="../kw_hamming.vi"/>
+		<Item Name="L3.vi" Type="VI" URL="../L3.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="user.lib" Type="Folder">
 				<Item Name="FinAD-DA.vi" Type="VI" URL="/&lt;userlib&gt;/GPA/AD-DA/FinAD-DA.vi"/>
@@ -222,7 +224,6 @@
 				<Item Name="NI_AALBase.lvlib" Type="Library" URL="/&lt;vilib&gt;/Analysis/NI_AALBase.lvlib"/>
 				<Item Name="NI_AALPro.lvlib" Type="Library" URL="/&lt;vilib&gt;/Analysis/NI_AALPro.lvlib"/>
 			</Item>
-			<Item Name="kaisser.vi" Type="VI" URL="../kaisser.vi"/>
 			<Item Name="lvanlys.dll" Type="Document" URL="/&lt;resource&gt;/lvanlys.dll"/>
 			<Item Name="nilvaiu.dll" Type="Document" URL="nilvaiu.dll">
 				<Property Name="NI.PreserveRelativePath" Type="Bool">true</Property>
