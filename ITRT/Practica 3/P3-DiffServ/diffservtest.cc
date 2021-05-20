@@ -106,21 +106,15 @@ int main (int argc, char *argv[]) {
 	bool constantbitrate_s1 = true; //By default, the traffic is CBR (constant bit rate)...
 	uint32_t IPBufferSize_s1 = 300; // In segments
 
-	// sPlus
-	double lambda_sPlus = 9.0;
-	double meanPacketSize_sPlus = 1000.0; //(bytes)
-	bool fixedlength_sPlus = true; //The DiffServ Implementation is not capable of dealing with UDP fragments!!!!!
-	bool constantbitrate_sPlus = true; //By default, the traffic is CBR (constant bit rate)...
-	uint32_t IPBufferSize_sPlus = 300; // In segments
-
-	// Pesos dinamicos
-	int pesoBE = 1, pesoAF = 1;
+	// Pesos WRR
+	int AF1weight = 1;
+	int AF2weight = 1;
+	int AF3weight = 1;
+	int AF4weight = 1;
+	int BEweight  = 1; //Best effort traffic (i.e. traffic belonging to flows that are not classified in a class of traffic
 
 	double bitRate_s1r1 = 10000000; //bps
 	std::string linkDelay_s1r1 = "300ns";
-
-	double bitRate_sPlusr1 = 10000000; //bps
-	std::string linkDelay_sPlusr1 = "300ns";
 
 	double bitRate_r2s2 = 10000000; //bps
 	std::string linkDelay_r2s2 = "300ns";
@@ -128,39 +122,50 @@ int main (int argc, char *argv[]) {
 	double bitRate_r1r2 = 100000; //bps
 	std::string linkDelay_r1r2 = "30ms";
 
+	/** LO NUEVO */
+	double lambda_sPlus = 9.0;
+	double meanPacketSize_sPlus = 1000.0; //(bytes)
+	bool fixedlength_sPlus = true; //The DiffServ Implementation is not capable of dealing with UDP fragments!!!!!
+	bool constantbitrate_sPlus = true; //By default, the traffic is CBR (constant bit rate)...
+	uint32_t IPBufferSize_sPlus = 300; // In segments
+
+	bool vip_sPlus = false;
+
+	double bitRate_sPlusr1 = 10000000; //bps
+	std::string linkDelay_sPlusr1 = "300ns";
+	/** HASTA AQUI */
+
 	CommandLine cmd;
 	cmd.AddValue ("tracing", "Tracing. Default: 0", tracing);
 	cmd.AddValue ("rep","Rep",rep);
 	cmd.AddValue ("tmax","Simulation time (seconds). Default: 10000 sec.",tmax );
-
-
 	cmd.AddValue ("lambda_s1","s1 Lambda. Default: 9 pkts/sec.",lambda_s1 );
 	cmd.AddValue ("meanPacketSize_s1","s1 MeanPacketSize (bytes). Default: 1000 bytes.",meanPacketSize_s1);
 	cmd.AddValue ("fixedlength_s1","Using fixed or exponential packet lengths for s1 (1=fixed, 0=exponential). Default: fixed (problems in DiffServ with UDP fragments", fixedlength_s1);
 	cmd.AddValue ("constantbitrate_s1","Using fixed or exponential time intervals between packets in s1 (1=fixed, 0=exponential). Default: fixed", constantbitrate_s1);
 	cmd.AddValue ("IPBufferSize_s1", "Number of IP packets the s1 IP entity should be able to store in its buffer for forwarding. Default: 300 packets)", IPBufferSize_s1);
+	cmd.AddValue ("bitRate_s1r1", "Link s1->r1 BitRate (bps). Default: 10000000 bps", bitRate_s1r1);
+	cmd.AddValue ("linkDelay_s1r1", "Delay of the s1->r1 p2p link. Default: 300ns.", linkDelay_s1r1);
+	cmd.AddValue ("bitRate_r2s2", "Link r2->s2 BitRate (bps). Default: 10000000 bps", bitRate_r2s2);
+	cmd.AddValue ("linkDelay_r2s2", "Delay of the r2->s2 p2p link. Default: 300ns.", linkDelay_r2s2);
+	cmd.AddValue ("bitRate_r1r2", "Link r1->r2 BitRate (bps). Default: 100000 bps", bitRate_r1r2);
+	cmd.AddValue ("linkDelay_r1r2", "Delay of the r1->r2 p2p link. Default: 30ms.", linkDelay_r1r2);
 
+	/** LO NUEVO */
 	cmd.AddValue ("lambda_sPlus","sPlus Lambda. Default: 9 pkts/sec.",lambda_sPlus );
 	cmd.AddValue ("meanPacketSize_sPlus","sPlus MeanPacketSize (bytes). Default: 1000 bytes.",meanPacketSize_sPlus);
 	cmd.AddValue ("fixedlength_sPlus","Using fixed or exponential packet lengths for sPlus (1=fixed, 0=exponential). Default: fixed (problems in DiffServ with UDP fragments", fixedlength_sPlus);
 	cmd.AddValue ("constantbitrate_sPlus","Using fixed or exponential time intervals between packets in sPlus (1=fixed, 0=exponential). Default: fixed", constantbitrate_sPlus);
 	cmd.AddValue ("IPBufferSize_sPlus", "Number of IP packets the sPlus IP entity should be able to store in its buffer for forwarding. Default: 300 packets)", IPBufferSize_sPlus);
 
-	cmd.AddValue ("pesoAF","Peso AF, por defecto: 1.", pesoAF);
-	cmd.AddValue ("pesoBE","Peso BE, por defecto: 1.", pesoBE);
+	cmd.AddValue ("vip_sPlus", "Si 1, etiqueta el tráfico de sPlus como EF. Por defecto etiqueta el tráfico como BE)", vip_sPlus);
 
-	cmd.AddValue ("bitRate_s1r1", "Link s1->r1 BitRate (bps). Default: 10000000 bps", bitRate_s1r1);
-	cmd.AddValue ("linkDelay_s1r1", "Delay of the s1->r1 p2p link. Default: 300ns.", linkDelay_s1r1);
+	cmd.AddValue ("AF1weight","Peso AF para el algoritmo WRR, por defecto: 1.", AF1weight);
+	cmd.AddValue ("BEweight","Peso BE para el algoritmo WRR, por defecto: 1.", BEweight);
 
 	cmd.AddValue ("bitRate_sPlusr1", "Link sPlus->r1 BitRate (bps). Default: 10000000 bps", bitRate_sPlusr1);
 	cmd.AddValue ("linkDelay_sPlusr1", "Delay of the sPlus->r1 p2p link. Default: 300ns.", linkDelay_sPlusr1);
-
-	cmd.AddValue ("bitRate_r2s2", "Link r2->s2 BitRate (bps). Default: 10000000 bps", bitRate_r2s2);
-	cmd.AddValue ("linkDelay_r2s2", "Delay of the r2->s2 p2p link. Default: 300ns.", linkDelay_r2s2);
-
-	cmd.AddValue ("bitRate_r1r2", "Link r1->r2 BitRate (bps). Default: 100000 bps", bitRate_r1r2);
-	cmd.AddValue ("linkDelay_r1r2", "Delay of the r1->r2 p2p link. Default: 30ms.", linkDelay_r1r2);
-
+	/** HASTA AQUI */
 
 	cmd.Parse(argc,argv);
 
@@ -168,7 +173,7 @@ int main (int argc, char *argv[]) {
 	AsciiTraceHelper asciiTraceHelper;
 	Ptr<OutputStreamWrapper> streamArrivals_s1 = NULL, streamArrivals_sPlus = NULL;
 	streamArrivals_s1 = asciiTraceHelper.CreateFileStream ("P3-DiffServ-s1-arrivals.trace");
-	streamArrivals_sPlus = asciiTraceHelper.CreateFileStream ("P3-DiffServ-sPlus-arrivals.trace");
+	streamArrivals_sPlus = asciiTraceHelper.CreateFileStream ("P3-DiffServ-sPlus-arrivals.trace"); //  <------------ NUEVO
 
 	SeedManager::SetRun(rep);
 
@@ -176,7 +181,9 @@ int main (int argc, char *argv[]) {
 	//Topology
 
 	NodeContainer nodes;
-	nodes.Create (5);
+
+	//nodes.Create (4);
+	nodes.Create (5); //  <------------ NUEVO
 
 	PointToPointHelper pointToPoint_s1r1;
 	std::stringstream bitRate_Stream_s1r1;
@@ -184,11 +191,13 @@ int main (int argc, char *argv[]) {
 	pointToPoint_s1r1.SetDeviceAttribute ("DataRate", StringValue(bitRate_Stream_s1r1.str()));
 	pointToPoint_s1r1.SetChannelAttribute ("Delay", StringValue (linkDelay_s1r1));
 
+	/** LO NUEVO */
 	PointToPointHelper pointToPoint_sPlusr1;
 	std::stringstream bitRate_Stream_sPlusr1;
 	bitRate_Stream_sPlusr1 << bitRate_sPlusr1/1000 << "Kbps\n";
 	pointToPoint_sPlusr1.SetDeviceAttribute ("DataRate", StringValue(bitRate_Stream_sPlusr1.str()));
 	pointToPoint_sPlusr1.SetChannelAttribute ("Delay", StringValue (linkDelay_sPlusr1));
+	/** HASTA AQUI */
 
 	PointToPointHelper pointToPoint_r2s2;
 	std::stringstream bitRate_Stream_r2s2;
@@ -197,12 +206,12 @@ int main (int argc, char *argv[]) {
 	pointToPoint_r2s2.SetChannelAttribute ("Delay", StringValue (linkDelay_r2s2));
 
 	NetDeviceContainer devices_s1r1;
-	NetDeviceContainer devices_sPlusr1;
+	NetDeviceContainer devices_sPlusr1;  //  <------------ NUEVO
 	NetDeviceContainer devices_r1r2;
 	NetDeviceContainer devices_r2s2;
 
 	devices_s1r1 = pointToPoint_s1r1.Install (nodes.Get(0),nodes.Get(1));
-	devices_sPlusr1 = pointToPoint_sPlusr1.Install (nodes.Get(4),nodes.Get(1));
+	devices_sPlusr1 = pointToPoint_sPlusr1.Install (nodes.Get(4),nodes.Get(1));  //  <------------ NUEVO
 	devices_r2s2 = pointToPoint_r2s2.Install (nodes.Get(2),nodes.Get(3));
 
 	Ptr<DiffServQueue> queue_r1 = CreateObject<DiffServQueue> ();
@@ -210,6 +219,7 @@ int main (int argc, char *argv[]) {
 	Ptr<OutputStreamWrapper> r1_DropNonConformantAFBE_Stream = asciiTraceHelper.CreateFileStream ("r1.DropNonConformantAFBE.trace");
 	queue_r1->TraceConnectWithoutContext ("DropNonConformantAFBE", MakeBoundCallback(&r1_DropNonConformantAFBE_callback, r1_DropNonConformantAFBE_Stream));
 
+	/** LO NUEVO */
 	// AQMDropAF1
 	Ptr<OutputStreamWrapper> r1_AQMDropAF1_Stream = asciiTraceHelper.CreateFileStream ("r1.AQMDropAF1.trace");
 	queue_r1->TraceConnectWithoutContext ("AQMDropAF1", MakeBoundCallback(&r1_AQMDropAF1_callback, r1_AQMDropAF1_Stream));
@@ -219,6 +229,7 @@ int main (int argc, char *argv[]) {
 	// DropTailBE
 	Ptr<OutputStreamWrapper> r1_DropTailBE_Stream = asciiTraceHelper.CreateFileStream ("r1.DropTailBE.trace");
 	queue_r1->TraceConnectWithoutContext ("DropTailBE", MakeBoundCallback(&r1_DropTailBE_callback, r1_DropTailBE_Stream));
+	/** HASTA AQUI */
 
 	Ptr<DropTailQueue> queue_r2 = CreateObject<DropTailQueue> ();
 	Ptr<PointToPointChannel> channel_r1r2 = CreateObject<PointToPointChannel> ();
@@ -256,20 +267,20 @@ int main (int argc, char *argv[]) {
 	address_r1r2.SetBase ("10.0.2.0", "255.255.255.0","0.0.0.1");
 	Ipv4AddressHelper address_r2s2;
 	address_r2s2.SetBase ("10.0.3.0", "255.255.255.0","0.0.0.1");
-	Ipv4AddressHelper address_sPlusr1;
-	address_sPlusr1.SetBase ("10.0.4.0", "255.255.255.0","0.0.0.1");
+	Ipv4AddressHelper address_sPlusr1; //  <------------ NUEVO
+	address_sPlusr1.SetBase ("10.0.4.0", "255.255.255.0","0.0.0.1"); //  <------------ NUEVO
 
 	Ipv4InterfaceContainer interfaces_s1r1 = address_s1r1.Assign (devices_s1r1);
 	Ipv4InterfaceContainer interfaces_r2s2 = address_r2s2.Assign (devices_r2s2);
 	Ipv4InterfaceContainer interfaces_r1r2 = address_r1r2.Assign (devices_r1r2);
-	Ipv4InterfaceContainer interfaces_sPlusr1 = address_sPlusr1.Assign (devices_sPlusr1);
+	Ipv4InterfaceContainer interfaces_sPlusr1 = address_sPlusr1.Assign (devices_sPlusr1); //  <------------ NUEVO
 
 	////////////////////////////////////////////////
 
 	//FOR INGRESS ROUTERS!!!!
 	//1 - Flow Setup (how incoming packets are classified)
 	Ptr<DiffServFlow> flow1Ptr = CreateObject<DiffServFlow> (001,"10.0.1.1","10.0.3.2",0,9); //Id, IP origin, IP dst, source port (0 for any), dst port.
-	Ptr<DiffServFlow> flow2Ptr = CreateObject<DiffServFlow> (002,"10.0.4.1","10.0.3.2",0,10); //Another example
+	Ptr<DiffServFlow> flow2Ptr = CreateObject<DiffServFlow> (002,"10.0.4.1","10.0.3.2",0,10); //  <------------ NUEVO
 
 	//2 - Conformance and Meter Specs (what to do when the traffic is not compliant with
 	//the Metering Specification, e.g. how to remark or to drop a packet when there
@@ -290,16 +301,18 @@ int main (int argc, char *argv[]) {
 	 * 		nonConformantActionI = yellow packets
 	 * 		nonConformantActionII = red packets
 	 */
+	/** LO NUEVO */
 	ConformanceSpec cSpec2;
 	cSpec2.initialCodePoint = BE;
 	cSpec2.nonConformantActionI = drop;
 	cSpec2.nonConformantActionII = drop;
 
-
 	ConformanceSpec cSpec3;
 	cSpec3.initialCodePoint = EF;
 	cSpec3.nonConformantActionI = drop;
 	cSpec3.nonConformantActionII = drop;
+	/** HASTA AQUI */
+
 
 	/*
 	ConformanceSpec cSpec4;
@@ -307,8 +320,6 @@ int main (int argc, char *argv[]) {
 	cSpec4.nonConformantActionI = AF42;
 	cSpec4.nonConformantActionII = AF43;
 	 */
-
-
 
 	//3a - Meters setup (a way of telling the DiffServ router what Metering approaches can be used...
 
@@ -322,8 +333,6 @@ int main (int argc, char *argv[]) {
 	myMeterVector.push_back(trTCM);
 
 	queue_r1->SetDiffServMeters(myMeterVector);
-
-
 
 	//3b - Configuration of the actual metering functions to used (in this case, e.g., a tocket bucket)
 	MeterSpec mSpec1;
@@ -347,13 +356,18 @@ int main (int argc, char *argv[]) {
 
 
 	//4 - SLA Setup
-	Ptr<DiffServSla> sla1Ptr = CreateObject<DiffServSla>(001,cSpec1,mSpec1); // AF11
-	Ptr<DiffServSla> sla2Ptr = CreateObject<DiffServSla>(002,cSpec2,mSpec1); // BE
-	//Ptr<DiffServSla> sla2Ptr = CreateObject<DiffServSla>(002,cSpec3,mSpec1); // EF
+	Ptr<DiffServSla> sla2Ptr, sla1Ptr = CreateObject<DiffServSla>(001,cSpec1,mSpec1); //  <------------ NUEVO
+
+	/** LO NUEVO */
+	if  (!vip_sPlus)
+		sla2Ptr = CreateObject<DiffServSla>(002,cSpec2,mSpec1); // BE
+	else
+		sla2Ptr = CreateObject<DiffServSla>(002,cSpec3,mSpec1); // EF
+	/** HASTA AQUI */
 
 	//5 - Which SLA is associated to each detected flow
 	flow1Ptr->SetSla(sla1Ptr);
-	flow2Ptr->SetSla(sla2Ptr);
+	flow2Ptr->SetSla(sla2Ptr); //  <------------ NUEVO
 
 	//6 - Configuring the token bucket for the EF traffic (if we want to "enforce" the
 	//agreement with the customer).
@@ -400,18 +414,16 @@ int main (int argc, char *argv[]) {
 	myAQMVector.push_back(AQM1Ptr);
 	queue_r1->SetDiffServAQM (myAQMVector,"WRED","WRED","WRED","WRED");
 
-
-
 	//2 - See http://www.eng.uwi.tt/depts/elec/staff/rvadams/sramroop/Core_Node_Design.htm
 	//WRR,Queue size,
 	//In each "round of the scheduler"
 	// * If the EF queue is not empty, an EF packet is sent
 	// * For each AF* queue and for the BE queue, if the corresponding weight>0, a packet is transmitted and weight-=1
-	int AF1weight = pesoAF;
-	int AF2weight = 1;
-	int AF3weight = 1;
-	int AF4weight = 1;
-	int BEweight  = pesoBE; //Best effort traffic (i.e. traffic belonging to flows that are not classified in a class of traffic
+	//int AF1weight = 1;
+	//int AF2weight = 1;
+	//int AF3weight = 1;
+	//int AF4weight = 1;
+	//int BEweight  = 1; //Best effort traffic (i.e. traffic belonging to flows that are not classified in a class of traffic
 	queue_r1->SetWRRWeights(AF1weight,AF2weight,AF3weight,AF4weight,BEweight);
 
 
@@ -434,11 +446,12 @@ int main (int argc, char *argv[]) {
 	Ptr<Application> receiver = serverApps_s2.Get(0);
 	Config::ConnectWithoutContext("/NodeList/3/ApplicationList/0/$ns3::PacketSink/Rx", MakeCallback(&receiverRx));
 
+	/** LO NUEVO */
 	PacketSinkHelper receiverHelper_s2_p ("ns3::UdpSocketFactory", InetSocketAddress(interfaces_r2s2.GetAddress(1), 10));
 	ApplicationContainer serverApps_s2_p = receiverHelper_s2_p.Install(nodes.Get(3)); //The packet sink is installed in s2 (nodes.Get(3))
 	Ptr<Application> receiver_p = serverApps_s2_p.Get(0);
 	Config::ConnectWithoutContext("/NodeList/3/ApplicationList/1/$ns3::PacketSink/Rx", MakeCallback(&receiverRx_p));
-
+	/** HASTA AQUI */
 	//Traffic generation
 	Sender *sender_s1 = new Sender (), *sender_sPlus = new Sender();
 
@@ -448,28 +461,27 @@ int main (int argc, char *argv[]) {
 	}else{
 		sender_s1->SetCreationInterval(ConstantVariable(1.0/lambda_s1));
 	}
-
 	//Do the packets have fixed length... or are they distributed exponentially?
 	if(!fixedlength_s1){
 		sender_s1->SetPacketSize (ExponentialVariable (meanPacketSize_s1));
 	}else{
 		sender_s1->SetFixedPacketSize(meanPacketSize_s1);
 	}
-	//Is the traffic poissonian or CBR?
+	sender_s1->SetStream(streamArrivals_s1);
+
+	/** LO NUEVO */
 	if(!constantbitrate_sPlus) {
 		sender_sPlus->SetCreationInterval(ExponentialVariable (1.0/lambda_sPlus ));
 	}else{
 		sender_sPlus->SetCreationInterval(ConstantVariable(1.0/lambda_sPlus));
 	}
-
-	//Do the packets have fixed length... or are they distributed exponentially?
 	if(!fixedlength_sPlus){
 		sender_sPlus->SetPacketSize (ExponentialVariable (meanPacketSize_sPlus));
 	}else{
 		sender_sPlus->SetFixedPacketSize(meanPacketSize_sPlus);
 	}
-	sender_s1->SetStream(streamArrivals_s1);
 	sender_sPlus->SetStream(streamArrivals_sPlus);
+	/** HASTA AQUI */
 
 	//Socket creation (obtained from udp-echo-client.cc
 	TypeId tid_s1 = TypeId::LookupByName("ns3::UdpSocketFactory");
@@ -480,6 +492,7 @@ int main (int argc, char *argv[]) {
 	udp_socket_s1->SetRecvCallback(MakeCallback(&Sender::HandleRead, sender_s1));
 	sender_s1->SetUdpSocket(udp_socket_s1); //Connecting the application with the transport entity
 
+	/** LO NUEVO */
 	TypeId tid_sPlus = TypeId::LookupByName("ns3::UdpSocketFactory");
 	Ptr<Socket> udp_socket_sPlus;
 	udp_socket_sPlus = Socket::CreateSocket(nodes.Get(4),tid_sPlus); //Connecting the transport entity with the network entity
@@ -487,6 +500,7 @@ int main (int argc, char *argv[]) {
 	udp_socket_sPlus->Connect(InetSocketAddress(interfaces_r2s2.GetAddress(1), 10));
 	udp_socket_sPlus->SetRecvCallback(MakeCallback(&Sender::HandleRead, sender_sPlus));
 	sender_sPlus->SetUdpSocket(udp_socket_sPlus); //Connecting the application with the transport entity
+	/** HASTA AQUI */
 
 	//Simulation Management
 	Simulator::Schedule(Seconds (0.0001), &Sender::Start, sender_s1);
@@ -494,11 +508,12 @@ int main (int argc, char *argv[]) {
 	serverApps_s2.Start (Seconds (0.0001));
 	serverApps_s2.Stop (Seconds (tmax));
 
-	//Simulation Management
+	/** LO NUEVO */
 	Simulator::Schedule(Seconds (tmax/2), &Sender::Start, sender_sPlus);
 	Simulator::Schedule(Seconds (tmax), &Sender::Stop, sender_sPlus);
 	serverApps_s2_p.Start (Seconds (0.0001));
 	serverApps_s2_p.Stop (Seconds (tmax));
+	/** HASTA AQUI */
 
 	Ipv4GlobalRoutingHelper::PopulateRoutingTables ();
 	//pointToPoint_s1r1.EnablePcapAll("diffservtest"); //If needed...
